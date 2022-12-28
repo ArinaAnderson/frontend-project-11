@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const MiniCssExtractPlugin = require('mini-css-extraxt-plugin');
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     clean: true,
-    filename: 'main.js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     // path: path.resolve(process.cwd(), 'dist'),
   },
@@ -27,23 +27,42 @@ module.exports = {
         // use: [MiniCssExtractPlugin.loader, 'css-loader'],
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.(scss)$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: () => [
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          },
+          {
+            loader: 'sass-loader',
+          },
+        ],
+      },
     ],
   },
-  /*
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
   ],
-  */
-  /*
   devServer: {
     static: {
       directory: path.resolve(__dirname, 'dist'),
     },
-    port: 3000,
     open: true,
     hot: true,
   },
-  */
 };

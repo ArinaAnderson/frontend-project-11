@@ -1,4 +1,4 @@
-// import './style.css';
+import './style.scss';
 import foo from './a.js';
 
 foo();
