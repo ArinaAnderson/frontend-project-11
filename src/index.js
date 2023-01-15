@@ -1,4 +1,4 @@
 import './style.scss';
-import foo from './a.js';
+import app from './app.js';
 
-foo();
+app();
