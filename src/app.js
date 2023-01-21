@@ -1,6 +1,5 @@
 import * as yup from 'yup';
 // import axios from 'axios';
-// import keyBy from 'lodash/keyBy.js';
 import view from './view.js';
 
 const validateURLField = (urlField, feeds) => {
@@ -11,19 +10,7 @@ const validateURLField = (urlField, feeds) => {
     .url('The input must be a valid URL')
     .notOneOf(feeds, 'The link must not be one of the existing feeds');
   return schema.validate(urlField, { abortEarly: false });
-}; // {
-/*
-  const schema = yup.object().shape({
-    url: yup
-      .string()
-      .trim()
-      .required()
-      .url('The input must be a valid URL')
-      .notOneOf(feeds, 'The link must not be one of the existing feeds'),
-  });
-  return schema.validate(formData, { abortEarly: false });
 };
-*/
 
 // const sendForm = (url) => axios.get(url);
 
@@ -32,15 +19,7 @@ const getFormData = (form) => Object.fromEntries(new FormData(form));
 const app = () => {
   const elements = {
     form: document.querySelector('.rss-form'),
-    // fields: {
-    // url: document.querySelector('#url-input'),
-    // },
     urlField: document.querySelector('#url-input'),
-    /*
-    feedback: {
-      url: document.querySelector('.feedback'),
-    },
-    */
     feedback: document.querySelector('.feedback'),
     submitBtn: document.querySelector('button[type="submit"]'),
   };
