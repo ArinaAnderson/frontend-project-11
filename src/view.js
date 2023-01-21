@@ -23,7 +23,7 @@ const renderFeedback = (feedback, isValid, errorText) => {
 };
 */
 
-const view = (state, elements) => {
+const view = (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
     if (path === 'form.validationErrors') {
       const { feedback, urlField } = elements;
@@ -34,7 +34,7 @@ const view = (state, elements) => {
         feedback.classList.add('d-none');
       } else {
         renderInput(urlField, false);
-        feedback.textContent = value;
+        feedback.textContent = i18next.t(value);
         feedback.classList.remove('d-none');
       }
     }
