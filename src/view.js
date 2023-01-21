@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import has from 'lodash/has.js';
+// import has from 'lodash/has.js';
 
 const renderInput = (input, isValid) => {
   if (!isValid) {
@@ -24,40 +24,19 @@ const renderFeedback = (feedback, isValid, errorText) => {
 */
 
 const view = (state, elements) => {
-  const watchedState = onChange(state, (path, value, prevValue) => {
+  const watchedState = onChange(state, (path, value) => {
     if (path === 'form.validationErrors') {
-      Object.entries(elements.fields).forEach(([fieldName, fieldElement]) => {
-        // const error = value[fieldName];
-        const feedback = elements.feedback[fieldName];
-        const fieldHadError = has(prevValue, fieldName);
-        const fieldHasError = has(value, fieldName);
+      const { feedback, urlField } = elements;
 
-        if (!fieldHadError && !fieldHasError) {
-          return;
-        }
-
-        if (fieldHadError && !fieldHasError) {
-          renderInput(fieldElement, true);
-          feedback.textContent = '';
-          feedback.classList.add('d-none');
-          // renderFeedback(elements.feedback, true);
-          return;
-        }
-
-        if (!fieldHadError && fieldHasError) {
-          renderInput(fieldElement, false);
-          feedback.textContent = value[fieldName].message;
-          feedback.classList.remove('d-none');
-          // renderFeedback(elements.feedback, false, value[fieldName].message);
-        }
-
-        if (fieldHadError && fieldHasError) {
-          // renderInput(fieldElement, false);
-          feedback.textContent = value[fieldName].message;
-          // feedback.classList.remove('d-none');
-          // renderFeedback(elements.feedback, false, value[fieldName].message);
-        }
-      });
+      if (value.length === 0) {
+        renderInput(urlField, true);
+        feedback.textContent = '';
+        feedback.classList.add('d-none');
+      } else {
+        renderInput(urlField, false);
+        feedback.textContent = value;
+        feedback.classList.remove('d-none');
+      }
     }
     /*
     if (value === 'success' || value === 'error') {
