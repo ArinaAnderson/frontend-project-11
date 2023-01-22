@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import i18n from 'i18next';
-// import axios from 'axios';
+import axios from 'axios';
 import view from './view.js';
 
 yup.setLocale({
@@ -35,7 +35,7 @@ const app = async () => {
   };
 
   const state = {
-    feeds: ['https://ru.hexlet.io/lessons.rss'],
+    feeds: [],
     currentFeed: null,
     form: {
       response: null,
@@ -54,7 +54,7 @@ const app = async () => {
     // resources,
     resources: {
       ru: {
-        translation: { // Так называемый namespace по умолчанию
+        translation: {
           invalidUrl: 'Вводимые данные не являются URL',
           notUniqueValue: 'URL уже существует',
         },
@@ -75,16 +75,19 @@ const app = async () => {
         watchedState.form.valid = true;
         watchedState.form.validationErrors = ''; // {};
         watchedState.form.processState = 'sending';
-
-        // return axios.get(formData.url);
+        const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&charset=utf-8&url=${formData.url}`;
+        return axios.get(rssURL);
       })
-      /*
-      .then(() => {
+      .then((response) => response.data)
+      .then((data) => {
         watchedState.form.processState = 'success';
-        watchedState.currentFeed = formData.url;
-        watchedState.todos.push(formData.url);
+        // const { feed, posts } = parseRSS(data)
+        // watchedState.currentFeed = formData.url;
+        // watchedState.feeds.push(formData.url);
+        const pr = new DOMParser();
+        const res = pr.parseFromString(data, 'text/xml');
+        console.log(res);
       })
-      */
       .catch((e) => {
         if (watchedState.form.processState === 'sending') {
           console.log('HERE');
@@ -92,8 +95,6 @@ const app = async () => {
         } else {
           watchedState.form.valid = false;
           watchedState.form.validationErrors = e.message.key;
-          // { url: e }; // keyBy(e.inner, 'path');
-          // console.log(watchedState.form.validationErrors.url);
           watchedState.form.processState = 'filling';
         }
       });
