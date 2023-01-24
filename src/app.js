@@ -75,7 +75,7 @@ const app = async () => {
         watchedState.form.valid = true;
         watchedState.form.validationErrors = ''; // {};
         watchedState.form.processState = 'sending';
-        const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&charset=utf-8&url=${formData.url}`;
+        const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${formData.url}`;
         return axios.get(rssURL);
       })
       .then((response) => response.data)
@@ -85,7 +85,7 @@ const app = async () => {
         // watchedState.currentFeed = formData.url;
         // watchedState.feeds.push(formData.url);
         const pr = new DOMParser();
-        const res = pr.parseFromString(data, 'text/xml');
+        const res = pr.parseFromString(data.contents, 'text/xml');
         console.log(res);
       })
       .catch((e) => {
