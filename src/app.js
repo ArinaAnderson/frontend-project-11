@@ -2,6 +2,7 @@ import * as yup from 'yup';
 import i18n from 'i18next';
 import axios from 'axios';
 import view from './view.js';
+import resources from './locales/index.js';
 
 yup.setLocale({
   string: {
@@ -48,6 +49,7 @@ const app = async () => {
   // const defaultLang = 'ru';
 
   const i18nextInstance = i18n.createInstance();
+  /*
   await i18nextInstance.init({
     lng: 'ru', // defaultLang,
     debug: true,
@@ -60,6 +62,13 @@ const app = async () => {
         },
       },
     },
+  });
+  */
+
+  await i18nextInstance.init({
+    lng: 'ru', // defaultLang,
+    debug: true,
+    resources,
   });
 
   const watchedState = view(state, elements, i18nextInstance);
