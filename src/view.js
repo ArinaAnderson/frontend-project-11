@@ -9,6 +9,10 @@ const renderInput = (input, isValid) => {
   }
 };
 
+const resetForm = (form, input) => {
+  form.reset();
+  input.focus();
+};
 /*
 const renderFeedback = (feedback, isValid, errorText) => {
   if (isValid) {
@@ -36,6 +40,12 @@ const view = (state, elements, i18next) => {
         renderInput(urlField, false);
         feedback.textContent = i18next.t(value);
         feedback.classList.remove('d-none');
+      }
+    }
+
+    if (path === 'form.processState') {
+      if (value === 'success') {
+        resetForm(elements.form, elements.urlField);
       }
     }
     /*
