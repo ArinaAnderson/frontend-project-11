@@ -13,39 +13,64 @@ const resetForm = (form, input) => {
   form.reset();
   input.focus();
 };
-/*
-const renderFeedback = (feedback, isValid, errorText) => {
-  if (isValid) {
-    // feedback.parentNode.removeChild(feedback);
-    feedback.classList.add('d-none');
-    feedback.textContent = '';
+
+const feedbackMapping = {
+  success: (feedback) => {
+    feedback.classList.remove('text-danger');
+    feedback.classList.add('text-success');
+  },
+  error: (feedback) => {
+    feedback.classList.remove('text-success');
+    feedback.classList.add('text-danger');
+  },
+};
+
+const renderFeedback = (feedbackElem, isHidden, text, state) => {
+  if (isHidden) {
+    // feedbackElem.textContent = '';
+    feedbackElem.classList.add('d-none');
     return;
   }
-
-  feedbackBox.textContent = errorText;
-  feedbackBox.classList.remove('d-none');
+  feedbackMapping[state](feedbackElem);
+  feedbackElem.textContent = text;
+  feedbackElem.classList.remove('d-none');
 };
-*/
 
 const view = (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
-    if (path === 'form.validationErrors') {
-      const { feedback, urlField } = elements;
+    const { feedback, urlField } = elements;
+
+    if (path === 'form.validationError') {
+      // const { feedback, urlField } = elements;
 
       if (value.length === 0) {
         renderInput(urlField, true);
-        feedback.textContent = '';
-        feedback.classList.add('d-none');
+        renderFeedback(feedback, true);
       } else {
         renderInput(urlField, false);
-        feedback.textContent = i18next.t(value);
-        feedback.classList.remove('d-none');
+        renderFeedback(feedback, false, i18next.t(value), 'error');
       }
     }
 
     if (path === 'form.processState') {
-      if (value === 'success') {
+      if (value === 'submit') {
+        // on change bug
+        renderFeedback(feedback, true);
+      }
+
+      // sending -> disable btn
+
+      if (value === 'loadSuccess') {
         resetForm(elements.form, elements.urlField);
+        renderFeedback(feedback, false, i18next.t(value), 'success');
+      }
+
+      if (value === 'networkError') {
+        renderFeedback(feedback, false, i18next.t(value), 'error');
+      }
+
+      if (value === 'parserError') {
+        renderFeedback(feedback, false, i18next.t(value), 'error');
       }
     }
     /*

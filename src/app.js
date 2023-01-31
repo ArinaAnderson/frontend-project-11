@@ -3,6 +3,7 @@ import i18n from 'i18next';
 import axios from 'axios';
 import view from './view.js';
 import resources from './locales/index.js';
+import parseRSS from './parser.js';
 
 yup.setLocale({
   string: {
@@ -36,35 +37,21 @@ const app = async () => {
   };
 
   const state = {
+    rssLinks: [],
     feeds: [],
-    currentFeed: null,
+    posts: [],
+    // currentFeed: null,
     form: {
       response: null,
       valid: null,
-      validationErrors: {},
-      processState: 'filling', // 'validation','submit', 'sending', 'error', 'sent'
+      validationError: '',
+      processState: 'filling', // 'validation','submit', 'sending', 'networkError', 'loadSuccess'
     },
   };
 
   // const defaultLang = 'ru';
 
   const i18nextInstance = i18n.createInstance();
-  /*
-  await i18nextInstance.init({
-    lng: 'ru', // defaultLang,
-    debug: true,
-    // resources,
-    resources: {
-      ru: {
-        translation: {
-          invalidUrl: 'Вводимые данные не являются URL',
-          notUniqueValue: 'URL уже существует',
-        },
-      },
-    },
-  });
-  */
-
   await i18nextInstance.init({
     lng: 'ru', // defaultLang,
     debug: true,
@@ -76,35 +63,35 @@ const app = async () => {
   elements.form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     watchedState.form.processState = 'submit';
+    watchedState.form.validationError = ''; // bug
 
     const formData = getFormData(evt.target);
 
-    validateURLField(formData.url, watchedState.feeds)
+    validateURLField(formData.url, watchedState.rssLinks)
       .then(() => {
         watchedState.form.valid = true;
-        watchedState.form.validationErrors = ''; // {};
+        watchedState.form.validationError = ''; // {};
         watchedState.form.processState = 'sending';
         const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${formData.url}`;
         return axios.get(rssURL);
       })
       .then((response) => response.data)
       .then((data) => {
-        watchedState.form.processState = 'success';
-        // const { feed, posts } = parseRSS(data)
-        // watchedState.currentFeed = formData.url;
-        // watchedState.feeds.push(formData.url);
-        const pr = new DOMParser();
-        const res = pr.parseFromString(data.contents, 'text/xml');
-        console.log(res);
+        watchedState.form.processState = 'loadSuccess';
+        const { feed, posts } = parseRSS(data.contents);
+        watchedState.rssLinks.push(formData.url);
+        console.log('BASYA', feed.description, posts[0].title);
       })
       .catch((e) => {
         if (watchedState.form.processState === 'sending') {
-          console.log('HERE');
-          watchedState.form.processState = 'error';
-        } else {
-          watchedState.form.valid = false;
-          watchedState.form.validationErrors = e.message.key;
+          watchedState.form.processState = 'networkError';
+        }
+        if (watchedState.form.processState === 'submit') {
+          watchedState.form.validationError = e.message.key;
           watchedState.form.processState = 'filling';
+        }
+        if (watchedState.form.processState === 'loadSuccess') {
+          watchedState.form.processState = 'parserError';
         }
       });
   });
