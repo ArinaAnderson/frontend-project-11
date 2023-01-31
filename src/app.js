@@ -14,13 +14,13 @@ yup.setLocale({
   },
 });
 
-const validateURLField = (urlField, feeds) => {
+const validateURLField = (urlField, rssLinks) => {
   const schema = yup
     .string()
     .trim()
     .required()
     .url() // ('The input must be a valid URL')
-    .notOneOf(feeds); // (feeds, 'The link must not be one of the existing feeds');
+    .notOneOf(rssLinks); // (feeds, 'The link must not be one of the existing feeds');
   return schema.validate(urlField, { abortEarly: false });
 };
 
