@@ -41,9 +41,23 @@ const renderFeedback = (feedbackElem, isHidden, text, state) => {
   <h2 class="card-title h4">Посты</h2>
 </div>
 <ul class="list-group border-0 rounded-0">
-  <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
-    <a href="https://ru.hexlet.io/courses/js-react/lessons/outro/theory_unit" class="fw-normal link-secondary" data-id="13" target="_blank" rel="noopener noreferrer">Заключение / JS: React</a>
-    <button type="button" class="btn btn-outline-primary btn-sm" data-id="13" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button>
+  <li
+    class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"
+  >
+    <a
+    href="https://ru.hexlet.io/courses/js-react/lessons/outro/theory_unit"
+    class="fw-normal link-secondary" data-id="13" target="_blank"
+    rel="noopener noreferrer">
+    Заключение / JS: React
+    </a>
+    <button
+    type="button"
+    class="btn btn-outline-primary btn-sm"
+    data-id="13"
+    data-bs-toggle="modal"
+    data-bs-target="#modal">
+    Просмотр
+    </button>
   </li>
 </ul>
 */
