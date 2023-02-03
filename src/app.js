@@ -36,6 +36,8 @@ const app = async () => {
     urlField: document.querySelector('#url-input'),
     feedback: document.querySelector('.feedback'),
     submitBtn: document.querySelector('button[type="submit"]'),
+    feedsContainer: document.querySelector('.feeds-container'),
+    postsContainer: document.querySelector('.posts-container'),
   };
 
   const state = {
@@ -87,9 +89,9 @@ const app = async () => {
         // const feedID = uniqueId();
         const { feed, posts } = handlePayload(parsedRSS, () => uniqueId());
         // handlePayload(parsedRSS, feedID);
-        console.log('GVENYAAAA', feed, posts[0]);
-        watchedState.feeds = watchedState.feeds.concat(feed);
-        watchedState.posts = watchedState.posts.concat(posts);
+        console.log('GVENYAAAA', feed, posts[0], posts[1], posts[2], posts[3], posts[4]);
+        watchedState.feeds.unshift(feed);
+        watchedState.posts = posts.concat(watchedState.posts);
       })
       .catch((e) => {
         // console.log(e.message);

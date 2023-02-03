@@ -36,35 +36,73 @@ const renderFeedback = (feedbackElem, isHidden, text, state) => {
   feedbackElem.classList.remove('d-none');
 };
 
-/*
-<div class="card-body">
-  <h2 class="card-title h4">Посты</h2>
-</div>
-<ul class="list-group border-0 rounded-0">
-  <li
-    class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"
-  >
-    <a
-    href="https://ru.hexlet.io/courses/js-react/lessons/outro/theory_unit"
-    class="fw-normal link-secondary" data-id="13" target="_blank"
-    rel="noopener noreferrer">
-    Заключение / JS: React
-    </a>
-    <button
-    type="button"
-    class="btn btn-outline-primary btn-sm"
-    data-id="13"
-    data-bs-toggle="modal"
-    data-bs-target="#modal">
-    Просмотр
-    </button>
-  </li>
-</ul>
-*/
+const renderFeed = ({ title, description }) => {
+  const liElem = document.createElement('li');
+  liElem.classList.add('list-group-item', 'border-0', 'border-end-0');
+
+  const h3Elem = document.createElement('h3');
+  h3Elem.classList.add('h6', 'm-0');
+  h3Elem.textContent = title;
+
+  const pElem = document.createElement('p');
+  pElem.classList.add('m-0', 'small', 'text-black-50');
+  pElem.textContent = description;
+
+  liElem.replaceChildren(h3Elem, pElem);
+
+  return liElem;
+};
+
+const renderPost = ({ title, link, id }) => {
+  const liElem = document.createElement('li');
+  liElem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+
+  const linkElem = document.createElement('a');
+  linkElem.classList.add('fw-bold');// ('fw-normal', 'link-secondary');
+  linkElem.textContent = title;
+  linkElem.setAttribute('href', link);
+  linkElem.setAttribute('target', '_blank');
+  linkElem.setAttribute('data-id', id);
+  linkElem.addEventListener('click', () => {
+    linkElem.classList.remove('fw-bold');
+    linkElem.classList.add('fw-normal', 'link-secondary');
+  });
+  // linkElem.setAttribute('rel', 'noopener', 'noreferrer');
+
+  const btnElem = document.createElement('button');
+  btnElem.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+  btnElem.textContent = 'Просмотр';
+  btnElem.setAttribute('type', 'button');
+  btnElem.setAttribute('data-id', id);
+  btnElem.setAttribute('data-bs-toggle', 'modal');
+  btnElem.setAttribute('data-bs-target', '#modal');
+
+  liElem.replaceChildren(linkElem, btnElem);
+
+  return liElem;
+};
+
+const renderItems = (items, container, cb) => {
+  container.innerHTML = '';
+
+  const ulElem = document.createElement('ul');
+  ulElem.classList.add('list-group', 'border-0', 'rounded-0');
+  const liElems = items.map((feed) => cb(feed));
+
+  ulElem.replaceChildren(...liElems);
+
+  container.appendChild(ulElem);
+};
 
 const view = (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
-    const { feedback, urlField } = elements;
+    const {
+      feedback,
+      urlField,
+      feedsContainer,
+      postsContainer,
+      submitBtn,
+    } = elements;
 
     if (path === 'form.validationError') {
       // const { feedback, urlField } = elements;
@@ -82,27 +120,43 @@ const view = (state, elements, i18next) => {
       if (value === 'submit') {
         // on change bug
         renderFeedback(feedback, true);
+        submitBtn.disabled = true;
       }
-
-      // sending -> disable btn
 
       if (value === 'loadSuccess') {
         resetForm(elements.form, elements.urlField);
         renderFeedback(feedback, false, i18next.t(value), 'success');
+        submitBtn.disabled = false;
       }
 
       if (value === 'networkError') {
         renderFeedback(feedback, false, i18next.t(value), 'error');
+        submitBtn.disabled = false;
       }
 
       if (value === 'parserError') {
         renderFeedback(feedback, false, i18next.t(value), 'error');
+        submitBtn.disabled = false;
+      }
+
+      if (value === 'filling') {
+        submitBtn.disabled = false;
       }
     }
 
-    if (path === 'posts') {
-      console.log('Spiral', value[3]);
+    if (path === 'feeds') {
+      renderItems(value, feedsContainer, renderFeed);
     }
+
+    if (path === 'posts') {
+      renderItems(value, postsContainer, renderPost);
+    }
+
+    /*
+    if (path === 'rssLinks') {
+      console.log('FENYANYYYYYa', value);
+    }
+    */
     /*
     if (value === 'success' || value === 'error') {
       RESET of form + focus
