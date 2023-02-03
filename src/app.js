@@ -83,43 +83,17 @@ const app = async () => {
 
         const parsedRSS = parseRSS(data.contents);
         watchedState.rssLinks.push(formData.url);
-        const feedID = uniqueId();
-        /*
-        const feedData = parsedRSS.feed;
-        const postsData = parsedRSS.posts;
-        const feed = {
-          id: feedID, // uniqueId(),
-          title: feedData.title.trim(),
-          description: feedData.description.trim(),
-        };
-        const posts = postsData.map((post) => ({
-          feedID,
-          title: post.title,
-          description: post.description,
-          link: post.link,
-        }));
-        console.log('BASYA', feed, posts[0]);
-        */
-        const { feed, posts } = handlePayload(parsedRSS, feedID);
+
+        // const feedID = uniqueId();
+        const { feed, posts } = handlePayload(parsedRSS, () => uniqueId());
+        // handlePayload(parsedRSS, feedID);
         console.log('GVENYAAAA', feed, posts[0]);
         watchedState.feeds = watchedState.feeds.concat(feed);
         watchedState.posts = watchedState.posts.concat(posts);
-        // watchedState.feeds.push(feed);
-        // console.log('BASYA', watchedState.feeds);
-        // watchedState.posts.concat(posts);
-        // console.log('BASYA', watchedState.posts[0]);
-
-        /*
-        watchedState.feeds.push({
-          id: uniqueId(),
-          title: feed.title.trim(),
-          description: feed.description.trim(),
-        });
-        */
       })
       .catch((e) => {
         // console.log(e.message);
-        // parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
+        // Error messages: parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
         if (watchedState.form.processState === 'sending') {
           watchedState.form.processState = 'networkError';
         }
