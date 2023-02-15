@@ -31,10 +31,11 @@ const validateURLField = (urlField, rssLinks) => {
 const getFormData = (form) => Object.fromEntries(new FormData(form));
 
 const updateFeedsHandler = (allFeeds, allPosts, state) => {
-  if (allFeeds.length === 0) {
-    return null;
+  if (allPosts.length === 0) {
+    return;
   }
   const allTitles = allPosts.map((post) => post.title);
+  console.log(allTitles);
   const promises = allFeeds.map(({ rssLink, id }) => {
     const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${rssLink}`;
     return axios.get(rssURL)
@@ -45,22 +46,24 @@ const updateFeedsHandler = (allFeeds, allPosts, state) => {
         // console.log('MARMU', posts);
         const newPosts = posts
           .filter((post) => {
-            console.log('FENYA', allTitles.includes(post.title));
-            return !allTitles.includes(post.title);
+            // const isPostNew = !allTitles.includes(post.title);
+            console.log('FENYA', allTitles, allTitles.includes(post.title));
+            return !allTitles.includes(post.title); // isPostNew;
           });
         // console.log('MARMU', newPosts);
         return newPosts;
-      });
-      // .catch(() => null);
+      })
+      .catch(() => null);
   });
   return Promise.all(promises)
-    .then((arrayOfNewPosts) => arrayOfNewPosts.flat()) // .filter((el) => el !== null))
+    .then((arrayOfNewPosts) => arrayOfNewPosts.flat().filter((el) => el !== null))
     .then((newPosts) => {
       // console.log('BASYYYYYAAAAA', newPosts);
       state.posts = newPosts.concat(state.posts);
       // console.log('SPIRAL', state.posts);
-      state.form.processState = 'updated';
+      // state.form.processState = 'updated';
     });
+    // new setTimeout???
 };
 
 const updateFeeds = (allFeeds, allPosts, state) => {
@@ -140,7 +143,7 @@ const app = async () => {
         setTimeout(() => updateFeedsHandler(watchedState.feeds, watchedState.posts, watchedState), 10000);
       })
       .catch((e) => {
-        // console.log(e.message);
+        console.log(e.message);
         // Error messages: parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
         if (watchedState.form.processState === 'sending') {
           watchedState.form.processState = 'networkError';
@@ -149,13 +152,18 @@ const app = async () => {
           watchedState.form.validationError = e.message.key;
           watchedState.form.processState = 'filling';
         }
+        if (e.message === 'parserError') {
+          watchedState.form.processState = 'parserError';
+        }
+        /*
         if (watchedState.form.processState === 'loadSuccess') {
           watchedState.form.processState = 'parserError';
         }
+        */
       });
   });
 
-  updateFeeds(watchedState.feeds, watchedState.posts, watchedState);
+  // updateFeeds(watchedState.feeds, watchedState.posts, watchedState);
 };
 
 export default app;
