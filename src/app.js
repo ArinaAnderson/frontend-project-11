@@ -29,25 +29,52 @@ const validateURLField = (urlField, rssLinks) => {
 // const sendForm = (url) => axios.get(url);
 
 const getFormData = (form) => Object.fromEntries(new FormData(form));
-/*
-const updateFeeds = (feeds) => {
-  if (feeds.length === 0) {
-    return;
-  }
 
-  const promises = feeds.map(({ rssLink, id }) => {
-    const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${link}`;
+const updateFeedsHandler = (allFeeds, allPosts, state) => {
+  if (allFeeds.length === 0) {
+    return null;
+  }
+  const allTitles = allPosts.map((post) => post.title);
+  const promises = allFeeds.map(({ rssLink, id }) => {
+    const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${rssLink}`;
     return axios.get(rssURL)
       .then((response) => response.data)
       .then((data) => {
         const parsedRSS = parseRSS(data.contents);
-        const { posts } = handlePayload(parsedRSS, () => uniqueId());
-        // const newPosts
-        // filter by FeedId
-      })
-      .catch(() => null);
+        const { posts } = handlePayload(rssLink, parsedRSS, id);
+        // console.log('MARMU', posts);
+        const newPosts = posts
+          .filter((post) => {
+            console.log('FENYA', allTitles.includes(post.title));
+            return !allTitles.includes(post.title);
+          });
+        // console.log('MARMU', newPosts);
+        return newPosts;
+      });
+      // .catch(() => null);
   });
+  return Promise.all(promises)
+    .then((arrayOfNewPosts) => arrayOfNewPosts.flat()) // .filter((el) => el !== null))
+    .then((newPosts) => {
+      // console.log('BASYYYYYAAAAA', newPosts);
+      state.posts = newPosts.concat(state.posts);
+      // console.log('SPIRAL', state.posts);
+      state.form.processState = 'updated';
+    });
 };
+
+const updateFeeds = (allFeeds, allPosts, state) => {
+  setTimeout(() => updateFeedsHandler(allFeeds, allPosts, state), 10000);
+  // setTimeout(() => console.log('URAAAAAA'), 10000);
+};
+/*
+{
+  feedID: feed.id,
+  title: post.title,
+  description: post.description,
+  link: post.link,
+  id: generateID(),
+}
 */
 
 const app = async () => {
@@ -106,10 +133,11 @@ const app = async () => {
         const parsedRSS = parseRSS(data.contents);
         watchedState.rssLinks.push(formData.url);
 
-        const { feed, posts } = handlePayload(formData.url, parsedRSS, () => uniqueId());
+        const { feed, posts } = handlePayload(formData.url, parsedRSS, uniqueId());
         console.log('GVENYAAAA', feed.rssLink, posts[0], posts[1], posts[2], posts[3], posts[4]);
         watchedState.feeds.unshift(feed);
         watchedState.posts = posts.concat(watchedState.posts);
+        setTimeout(() => updateFeedsHandler(watchedState.feeds, watchedState.posts, watchedState), 10000);
       })
       .catch((e) => {
         // console.log(e.message);
@@ -126,6 +154,8 @@ const app = async () => {
         }
       });
   });
+
+  updateFeeds(watchedState.feeds, watchedState.posts, watchedState);
 };
 
 export default app;

@@ -1,12 +1,12 @@
 // import uniqueId from 'lodash/uniqueId.js';
 // import parseRSS from './parser.js';
 
-const handlePayload = (rssLink, parsedRSS, generateID) => { // (parsedRSS, feedID) => {
+const handlePayload = (rssLink, parsedRSS, feedID) => { // (parsedRSS, feedID) => {
   // const { feed: feedData, posts: postsData } = parseRSS(rssContents); // (data.contents);
   const { feed: feedData, posts: postsData } = parsedRSS;
 
   const feed = {
-    id: generateID(), // feedID, // uniqueId(),
+    id: feedID, // feedID, // uniqueId(),
     title: feedData.title.trim(),
     description: feedData.description.trim(),
     rssLink,
@@ -17,7 +17,7 @@ const handlePayload = (rssLink, parsedRSS, generateID) => { // (parsedRSS, feedI
     title: post.title,
     description: post.description,
     link: post.link,
-    id: generateID(),
+    // id: generateID(),
   }));
 
   return { feed, posts };

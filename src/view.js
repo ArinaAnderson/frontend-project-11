@@ -142,6 +142,12 @@ const view = (state, elements, i18next) => {
       if (value === 'filling') {
         submitBtn.disabled = false;
       }
+
+      /*
+      if (value === 'updated') {
+        renderItems(state.posts, postsContainer, renderPost);
+      }
+      */
     }
 
     if (path === 'feeds') {
