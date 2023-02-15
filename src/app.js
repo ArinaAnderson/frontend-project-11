@@ -29,6 +29,26 @@ const validateURLField = (urlField, rssLinks) => {
 // const sendForm = (url) => axios.get(url);
 
 const getFormData = (form) => Object.fromEntries(new FormData(form));
+/*
+const updateFeeds = (feeds) => {
+  if (feeds.length === 0) {
+    return;
+  }
+
+  const promises = feeds.map(({ rssLink, id }) => {
+    const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${link}`;
+    return axios.get(rssURL)
+      .then((response) => response.data)
+      .then((data) => {
+        const parsedRSS = parseRSS(data.contents);
+        const { posts } = handlePayload(parsedRSS, () => uniqueId());
+        // const newPosts
+        // filter by FeedId
+      })
+      .catch(() => null);
+  });
+};
+*/
 
 const app = async () => {
   const elements = {
@@ -86,10 +106,8 @@ const app = async () => {
         const parsedRSS = parseRSS(data.contents);
         watchedState.rssLinks.push(formData.url);
 
-        // const feedID = uniqueId();
-        const { feed, posts } = handlePayload(parsedRSS, () => uniqueId());
-        // handlePayload(parsedRSS, feedID);
-        console.log('GVENYAAAA', feed, posts[0], posts[1], posts[2], posts[3], posts[4]);
+        const { feed, posts } = handlePayload(formData.url, parsedRSS, () => uniqueId());
+        console.log('GVENYAAAA', feed.rssLink, posts[0], posts[1], posts[2], posts[3], posts[4]);
         watchedState.feeds.unshift(feed);
         watchedState.posts = posts.concat(watchedState.posts);
       })
