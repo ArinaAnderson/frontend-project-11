@@ -30,12 +30,15 @@ const validateURLField = (urlField, rssLinks) => {
 
 const getFormData = (form) => Object.fromEntries(new FormData(form));
 
-const updateFeedsHandler = (allFeeds, allPosts, state) => {
+const updateFeedsHandler = (state) => {
+  const { feeds: allFeeds, posts: allPosts } = state;
+
   if (allPosts.length === 0) {
-    return;
+    return null;
   }
+
   const allTitles = allPosts.map((post) => post.title);
-  console.log(allTitles);
+  // console.log(allTitles);
   const promises = allFeeds.map(({ rssLink, id }) => {
     const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${rssLink}`;
     return axios.get(rssURL)
@@ -45,11 +48,11 @@ const updateFeedsHandler = (allFeeds, allPosts, state) => {
         const { posts } = handlePayload(rssLink, parsedRSS, id);
         // console.log('MARMU', posts);
         const newPosts = posts
-          .filter((post) => {
+          .filter((post) => !allTitles.includes(post.title)); // {
             // const isPostNew = !allTitles.includes(post.title);
-            console.log('FENYA', allTitles, allTitles.includes(post.title));
-            return !allTitles.includes(post.title); // isPostNew;
-          });
+            // console.log('FENYA', allTitles, allTitles.includes(post.title));
+            // return !allTitles.includes(post.title); // isPostNew;
+          // });
         // console.log('MARMU', newPosts);
         return newPosts;
       })
@@ -58,16 +61,15 @@ const updateFeedsHandler = (allFeeds, allPosts, state) => {
   return Promise.all(promises)
     .then((arrayOfNewPosts) => arrayOfNewPosts.flat().filter((el) => el !== null))
     .then((newPosts) => {
-      // console.log('BASYYYYYAAAAA', newPosts);
       state.posts = newPosts.concat(state.posts);
       // console.log('SPIRAL', state.posts);
-      // state.form.processState = 'updated';
-    });
-    // new setTimeout???
+    })
+    .then(() => setTimeout(() => updateFeedsHandler(state), 5000))
+    // .catch(() => setTimeout(() => updateFeedsHandler(state), 5000));
 };
 
-const updateFeeds = (allFeeds, allPosts, state) => {
-  setTimeout(() => updateFeedsHandler(allFeeds, allPosts, state), 10000);
+const updateFeeds = (state) => {
+  setTimeout(() => updateFeedsHandler(state), 10000);
   // setTimeout(() => console.log('URAAAAAA'), 10000);
 };
 /*
@@ -137,10 +139,10 @@ const app = async () => {
         watchedState.rssLinks.push(formData.url);
 
         const { feed, posts } = handlePayload(formData.url, parsedRSS, uniqueId());
-        console.log('GVENYAAAA', feed.rssLink, posts[0], posts[1], posts[2], posts[3], posts[4]);
+        // console.log('GVENYAAAA', feed.rssLink, posts[0], posts[1], posts[2], posts[3], posts[4]);
         watchedState.feeds.unshift(feed);
         watchedState.posts = posts.concat(watchedState.posts);
-        setTimeout(() => updateFeedsHandler(watchedState.feeds, watchedState.posts, watchedState), 10000);
+        setTimeout(() => updateFeedsHandler(watchedState), 10000);
       })
       .catch((e) => {
         console.log(e.message);
