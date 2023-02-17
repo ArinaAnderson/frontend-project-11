@@ -34,7 +34,8 @@ const updateFeedsHandler = (state) => {
   const { feeds: allFeeds, posts: allPosts } = state;
 
   if (allPosts.length === 0) {
-    return null;
+    // return null;
+    setTimeout(() => updateFeedsHandler(state), 5000);
   }
 
   const allTitles = allPosts.map((post) => post.title);
@@ -64,7 +65,7 @@ const updateFeedsHandler = (state) => {
       state.posts = newPosts.concat(state.posts);
       // console.log('SPIRAL', state.posts);
     })
-    .then(() => setTimeout(() => updateFeedsHandler(state), 5000))
+    .then(() => setTimeout(() => updateFeedsHandler(state), 5000));
     // .catch(() => setTimeout(() => updateFeedsHandler(state), 5000));
 };
 
@@ -142,7 +143,7 @@ const app = async () => {
         // console.log('GVENYAAAA', feed.rssLink, posts[0], posts[1], posts[2], posts[3], posts[4]);
         watchedState.feeds.unshift(feed);
         watchedState.posts = posts.concat(watchedState.posts);
-        setTimeout(() => updateFeedsHandler(watchedState), 10000);
+        // setTimeout(() => updateFeedsHandler(watchedState), 10000);
       })
       .catch((e) => {
         console.log(e.message);
@@ -165,7 +166,8 @@ const app = async () => {
       });
   });
 
-  // updateFeeds(watchedState.feeds, watchedState.posts, watchedState);
+  updateFeeds(watchedState);
+  // setTimeout(() => updateFeedsHandler(watchedState), 10000);
 };
 
 export default app;
