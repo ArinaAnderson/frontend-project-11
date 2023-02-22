@@ -26,20 +26,17 @@ const validateURLField = (urlField, rssLinks) => {
   return schema.validate(urlField, { abortEarly: false });
 };
 
-// const sendForm = (url) => axios.get(url);
-
 const getFormData = (form) => Object.fromEntries(new FormData(form));
 
 const updateFeedsHandler = (state) => {
   const { feeds: allFeeds, posts: allPosts } = state;
-
+  /*
   if (allPosts.length === 0) {
     // return null;
     setTimeout(() => updateFeedsHandler(state), 5000);
   }
-
+  */
   const allTitles = allPosts.map((post) => post.title);
-  // console.log(allTitles);
   const promises = allFeeds.map(({ rssLink, id }) => {
     const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${rssLink}`;
     return axios.get(rssURL)
@@ -47,14 +44,8 @@ const updateFeedsHandler = (state) => {
       .then((data) => {
         const parsedRSS = parseRSS(data.contents);
         const { posts } = handlePayload(rssLink, parsedRSS, id);
-        // console.log('MARMU', posts);
         const newPosts = posts
-          .filter((post) => !allTitles.includes(post.title)); // {
-            // const isPostNew = !allTitles.includes(post.title);
-            // console.log('FENYA', allTitles, allTitles.includes(post.title));
-            // return !allTitles.includes(post.title); // isPostNew;
-          // });
-        // console.log('MARMU', newPosts);
+          .filter((post) => !allTitles.includes(post.title));
         return newPosts;
       })
       .catch(() => null);
@@ -63,25 +54,13 @@ const updateFeedsHandler = (state) => {
     .then((arrayOfNewPosts) => arrayOfNewPosts.flat().filter((el) => el !== null))
     .then((newPosts) => {
       state.posts = newPosts.concat(state.posts);
-      // console.log('SPIRAL', state.posts);
     })
-    .then(() => setTimeout(() => updateFeedsHandler(state), 5000));
-    // .catch(() => setTimeout(() => updateFeedsHandler(state), 5000));
+    .then(() => setTimeout(() => updateFeedsHandler(state), 2000));
 };
 
-const updateFeeds = (state) => {
-  setTimeout(() => updateFeedsHandler(state), 10000);
-  // setTimeout(() => console.log('URAAAAAA'), 10000);
+const startFeedsUpdate = (state) => {
+  setTimeout(() => updateFeedsHandler(state), 5000);
 };
-/*
-{
-  feedID: feed.id,
-  title: post.title,
-  description: post.description,
-  link: post.link,
-  id: generateID(),
-}
-*/
 
 const app = async () => {
   const elements = {
@@ -97,7 +76,6 @@ const app = async () => {
     rssLinks: [],
     feeds: [],
     posts: [],
-    // currentFeed: null,
     form: {
       response: null,
       valid: null,
@@ -106,11 +84,11 @@ const app = async () => {
     },
   };
 
-  // const defaultLang = 'ru';
+  const defaultLang = 'ru';
 
   const i18nextInstance = i18n.createInstance();
   await i18nextInstance.init({
-    lng: 'ru', // defaultLang,
+    lng: defaultLang, // defaultLang,
     debug: true,
     resources,
   });
@@ -120,14 +98,14 @@ const app = async () => {
   elements.form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     watchedState.form.processState = 'submit';
-    watchedState.form.validationError = ''; // bug
+    watchedState.form.validationError = '';
 
     const formData = getFormData(evt.target);
 
     validateURLField(formData.url, watchedState.rssLinks)
       .then(() => {
         watchedState.form.valid = true;
-        watchedState.form.validationError = ''; // {};
+        watchedState.form.validationError = '';
         watchedState.form.processState = 'sending';
         const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${formData.url}`;
         return axios.get(rssURL);
@@ -137,17 +115,16 @@ const app = async () => {
         watchedState.form.processState = 'loadSuccess';
 
         const parsedRSS = parseRSS(data.contents);
-        watchedState.rssLinks.push(formData.url);
+        watchedState.rssLinks.push(formData.url); // move below
 
         const { feed, posts } = handlePayload(formData.url, parsedRSS, uniqueId());
-        // console.log('GVENYAAAA', feed.rssLink, posts[0], posts[1], posts[2], posts[3], posts[4]);
         watchedState.feeds.unshift(feed);
         watchedState.posts = posts.concat(watchedState.posts);
         // setTimeout(() => updateFeedsHandler(watchedState), 10000);
       })
       .catch((e) => {
-        console.log(e.message);
-        // Error messages: parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
+        // Error messages:
+        // parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
         if (watchedState.form.processState === 'sending') {
           watchedState.form.processState = 'networkError';
         }
@@ -155,19 +132,13 @@ const app = async () => {
           watchedState.form.validationError = e.message.key;
           watchedState.form.processState = 'filling';
         }
-        if (e.message === 'parserError') {
-          watchedState.form.processState = 'parserError';
-        }
-        /*
         if (watchedState.form.processState === 'loadSuccess') {
           watchedState.form.processState = 'parserError';
         }
-        */
       });
   });
 
-  updateFeeds(watchedState);
-  // setTimeout(() => updateFeedsHandler(watchedState), 10000);
+  startFeedsUpdate(watchedState);
 };
 
 export default app;

@@ -1,8 +1,4 @@
-// import uniqueId from 'lodash/uniqueId.js';
-// import parseRSS from './parser.js';
-
-const handlePayload = (rssLink, parsedRSS, feedID) => { // (parsedRSS, feedID) => {
-  // const { feed: feedData, posts: postsData } = parseRSS(rssContents); // (data.contents);
+const handlePayload = (rssLink, parsedRSS, feedID) => {
   const { feed: feedData, posts: postsData } = parsedRSS;
 
   const feed = {

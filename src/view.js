@@ -94,60 +94,68 @@ const renderItems = (items, container, cb) => {
   container.appendChild(ulElem);
 };
 
+const handleFormProcessState = (processState, elements, i18next) => {
+  switch (processState) {
+    case 'submit':
+      renderFeedback(elements.feedback, true);
+      elements.submitBtn.disabled = true;
+      break;
+
+    case 'sending':
+      elements.submitBtn.disabled = true;
+      break;
+
+    case 'loadSuccess':
+      resetForm(elements.form, elements.urlField);
+      renderFeedback(elements.feedback, false, i18next.t(processState), 'success');
+      elements.submitBtn.disabled = false;
+      break;
+
+    case 'networkError':
+      renderFeedback(elements.feedback, false, i18next.t(processState), 'error');
+      elements.submitBtn.disabled = false;
+      break;
+
+    case 'parserError':
+      renderFeedback(elements.feedback, false, i18next.t(processState), 'error');
+      elements.submitBtn.disabled = false;
+      break;
+
+    case 'filling':
+      elements.submitBtn.disabled = false;
+      break;
+
+    default:
+      throw new Error(`Unknown process state: ${processState}`);
+  }
+};
+
+const handleValidationError = (validationError, elements, i18next) => {
+  if (validationError.length === 0) {
+    renderInput(elements.urlField, true);
+    renderFeedback(elements.feedback, true);
+  } else {
+    renderInput(elements.urlField, false);
+    renderFeedback(elements.feedback, false, i18next.t(validationError), 'error');
+  }
+};
+
 const view = (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
     const {
-      feedback,
-      urlField,
+      // feedback,
+      // urlField,
       feedsContainer,
       postsContainer,
-      submitBtn,
+      // submitBtn,
     } = elements;
 
     if (path === 'form.validationError') {
-      // const { feedback, urlField } = elements;
-
-      if (value.length === 0) {
-        renderInput(urlField, true);
-        renderFeedback(feedback, true);
-      } else {
-        renderInput(urlField, false);
-        renderFeedback(feedback, false, i18next.t(value), 'error');
-      }
+      handleValidationError(value, elements, i18next);
     }
 
     if (path === 'form.processState') {
-      if (value === 'submit') {
-        // on change bug
-        renderFeedback(feedback, true);
-        submitBtn.disabled = true;
-      }
-
-      if (value === 'loadSuccess') {
-        resetForm(elements.form, elements.urlField);
-        renderFeedback(feedback, false, i18next.t(value), 'success');
-        submitBtn.disabled = false;
-      }
-
-      if (value === 'networkError') {
-        renderFeedback(feedback, false, i18next.t(value), 'error');
-        submitBtn.disabled = false;
-      }
-
-      if (value === 'parserError') {
-        renderFeedback(feedback, false, i18next.t(value), 'error');
-        submitBtn.disabled = false;
-      }
-
-      if (value === 'filling') {
-        submitBtn.disabled = false;
-      }
-
-      /*
-      if (value === 'updated') {
-        renderItems(state.posts, postsContainer, renderPost);
-      }
-      */
+      handleFormProcessState(value, elements, i18next);
     }
 
     if (path === 'feeds') {
@@ -157,17 +165,6 @@ const view = (state, elements, i18next) => {
     if (path === 'posts') {
       renderItems(value, postsContainer, renderPost);
     }
-
-    /*
-    if (path === 'rssLinks') {
-      console.log('FENYANYYYYYa', value);
-    }
-    */
-    /*
-    if (value === 'success' || value === 'error') {
-      RESET of form + focus
-    }
-    */
   });
 
   return watchedState;
