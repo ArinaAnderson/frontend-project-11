@@ -44,7 +44,7 @@ const updateFeedsHandler = (state) => {
       .then((response) => response.data)
       .then((data) => {
         const parsedRSS = parseRSS(data.contents);
-        const { posts } = handlePayload(rssLink, parsedRSS, id); // , uniqueId);
+        const { posts } = handlePayload(rssLink, parsedRSS, id, uniqueId);
         const newPosts = posts
           .filter((post) => !allTitles.includes(post.title));
         return newPosts;
@@ -120,7 +120,7 @@ const app = async () => {
         watchedState.rssLinks.push(formData.url); // move below
 
         const currentFeedID = uniqueId();
-        const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID); //, uniqueId);
+        const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID, uniqueId);
         watchedState.feeds.unshift(feed);
         watchedState.posts = posts.concat(watchedState.posts);
         // setTimeout(() => updateFeedsHandler(watchedState), 10000);

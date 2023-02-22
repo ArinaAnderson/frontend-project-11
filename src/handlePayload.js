@@ -1,6 +1,4 @@
-import uniqueId from 'lodash/uniqueId.js';
-
-const handlePayload = (rssLink, parsedRSS, feedID) => { // , getPostID) => {
+const handlePayload = (rssLink, parsedRSS, feedID, getPostID) => {
   const { feed: feedData, posts: postsData } = parsedRSS;
 
   const feed = {
@@ -12,7 +10,7 @@ const handlePayload = (rssLink, parsedRSS, feedID) => { // , getPostID) => {
 
   const posts = postsData.map((post) => ({
     feedID: feed.id,
-    id: uniqueId(), // getPostID(),
+    id: getPostID(),
     title: post.title,
     description: post.description,
     link: post.link,
