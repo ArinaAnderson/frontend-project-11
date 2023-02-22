@@ -53,7 +53,7 @@ const renderFeed = ({ title, description }) => {
   return liElem;
 };
 
-const renderPost = ({ title, link, id }) => {
+const renderPost = ({ title, link, id }, i18next) => {
   const liElem = document.createElement('li');
   liElem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -71,7 +71,7 @@ const renderPost = ({ title, link, id }) => {
 
   const btnElem = document.createElement('button');
   btnElem.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-  btnElem.textContent = 'Просмотр';
+  btnElem.textContent = i18next.t('viewPostButton');
   btnElem.setAttribute('type', 'button');
   btnElem.setAttribute('data-id', id);
   btnElem.setAttribute('data-bs-toggle', 'modal');
@@ -82,20 +82,20 @@ const renderPost = ({ title, link, id }) => {
   return liElem;
 };
 
-const renderItems = (items, container, cb) => {
+const renderItems = (items, container, cb, i18next) => {
   container.innerHTML = '';
 
   const ulElem = document.createElement('ul');
   ulElem.classList.add('list-group', 'border-0', 'rounded-0');
-  const liElems = items.map((feed) => cb(feed));
+  const liElems = items.map((item) => cb(item, i18next));
 
   ulElem.replaceChildren(...liElems);
 
   container.appendChild(ulElem);
 };
 
-const handleFormProcessState = (processState, elements, i18next) => {
-  switch (processState) {
+const handleFormProcessState = (processStateVal, elements, i18next) => {
+  switch (processStateVal) {
     case 'submit':
       renderFeedback(elements.feedback, true);
       elements.submitBtn.disabled = true;
@@ -107,17 +107,17 @@ const handleFormProcessState = (processState, elements, i18next) => {
 
     case 'loadSuccess':
       resetForm(elements.form, elements.urlField);
-      renderFeedback(elements.feedback, false, i18next.t(processState), 'success');
+      renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'success');
       elements.submitBtn.disabled = false;
       break;
 
     case 'networkError':
-      renderFeedback(elements.feedback, false, i18next.t(processState), 'error');
+      renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'error');
       elements.submitBtn.disabled = false;
       break;
 
     case 'parserError':
-      renderFeedback(elements.feedback, false, i18next.t(processState), 'error');
+      renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'error');
       elements.submitBtn.disabled = false;
       break;
 
@@ -126,7 +126,7 @@ const handleFormProcessState = (processState, elements, i18next) => {
       break;
 
     default:
-      throw new Error(`Unknown process state: ${processState}`);
+      throw new Error(`Unknown process state: ${processStateVal}`);
   }
 };
 
@@ -136,7 +136,7 @@ const handleValidationError = (validationError, elements, i18next) => {
     renderFeedback(elements.feedback, true);
   } else {
     renderInput(elements.urlField, false);
-    renderFeedback(elements.feedback, false, i18next.t(validationError), 'error');
+    renderFeedback(elements.feedback, false, i18next.t(`validationMessage.${validationError}`), 'error');
   }
 };
 
@@ -163,7 +163,7 @@ const view = (state, elements, i18next) => {
     }
 
     if (path === 'posts') {
-      renderItems(value, postsContainer, renderPost);
+      renderItems(value, postsContainer, renderPost, i18next);
     }
   });
 

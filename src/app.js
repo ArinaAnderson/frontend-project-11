@@ -12,6 +12,7 @@ yup.setLocale({
     url: () => ({ key: 'invalidUrl' }),
   },
   mixed: {
+    required: () => ({ key: 'requiredUrl' }),
     notOneOf: () => ({ key: 'notUniqueValue' }),
   },
 });
@@ -21,8 +22,8 @@ const validateURLField = (urlField, rssLinks) => {
     .string()
     .trim()
     .required()
-    .url() // ('The input must be a valid URL')
-    .notOneOf(rssLinks); // (feeds, 'The link must not be one of the existing feeds');
+    .url()
+    .notOneOf(rssLinks);
   return schema.validate(urlField, { abortEarly: false });
 };
 
