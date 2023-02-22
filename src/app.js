@@ -44,7 +44,7 @@ const updateFeedsHandler = (state) => {
       .then((response) => response.data)
       .then((data) => {
         const parsedRSS = parseRSS(data.contents);
-        const { posts } = handlePayload(rssLink, parsedRSS, id);
+        const { posts } = handlePayload(rssLink, parsedRSS, id); // , uniqueId);
         const newPosts = posts
           .filter((post) => !allTitles.includes(post.title));
         return newPosts;
@@ -55,6 +55,7 @@ const updateFeedsHandler = (state) => {
     .then((arrayOfNewPosts) => arrayOfNewPosts.flat().filter((el) => el !== null))
     .then((newPosts) => {
       state.posts = newPosts.concat(state.posts);
+      console.log('SPIRAL!!!', state.posts);
     })
     .then(() => setTimeout(() => updateFeedsHandler(state), 2000));
 };
@@ -118,7 +119,8 @@ const app = async () => {
         const parsedRSS = parseRSS(data.contents);
         watchedState.rssLinks.push(formData.url); // move below
 
-        const { feed, posts } = handlePayload(formData.url, parsedRSS, uniqueId());
+        const currentFeedID = uniqueId();
+        const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID); //, uniqueId);
         watchedState.feeds.unshift(feed);
         watchedState.posts = posts.concat(watchedState.posts);
         // setTimeout(() => updateFeedsHandler(watchedState), 10000);
