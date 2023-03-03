@@ -6,6 +6,7 @@ import view from './view.js';
 import resources from './locales/index.js';
 import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
+import buildURL from './buildURL.js';
 
 yup.setLocale({
   string: {
@@ -39,7 +40,11 @@ const updateFeedsHandler = (state) => {
   */
   const allTitles = allPosts.map((post) => post.title);
   const promises = allFeeds.map(({ rssLink, id }) => {
-    const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${rssLink}`;
+    // const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${rssLink}`;
+    const rssURL = buildURL('https://allorigins.hexlet.app', '/get', {
+      disableCache: true,
+      url: rssLink,
+    });
     return axios.get(rssURL)
       .then((response) => response.data)
       .then((data) => {
@@ -55,7 +60,6 @@ const updateFeedsHandler = (state) => {
     .then((arrayOfNewPosts) => arrayOfNewPosts.flat().filter((el) => el !== null))
     .then((newPosts) => {
       state.posts = newPosts.concat(state.posts);
-      console.log('SPIRAL!!!', state.posts);
     })
     .then(() => setTimeout(() => updateFeedsHandler(state), 2000));
 };
@@ -109,7 +113,12 @@ const app = async () => {
         watchedState.form.valid = true;
         watchedState.form.validationError = '';
         watchedState.form.processState = 'sending';
-        const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${formData.url}`;
+
+        const rssURL = buildURL('https://allorigins.hexlet.app', '/get', {
+          disableCache: true,
+          url: formData.url,
+        });
+        // const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${formData.url}`;
         return axios.get(rssURL);
       })
       .then((response) => response.data)
