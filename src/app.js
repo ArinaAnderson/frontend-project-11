@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+// import * as yup from 'yup';
 import i18n from 'i18next';
 import axios from 'axios';
 import uniqueId from 'lodash/uniqueId.js';
@@ -7,7 +7,9 @@ import resources from './locales/index.js';
 import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
 import buildURL from './buildURL.js';
+import handleFormSubmit from './handleFormSubmit.js';
 
+/*
 yup.setLocale({
   string: {
     url: () => ({ key: 'invalidUrl' }),
@@ -17,7 +19,8 @@ yup.setLocale({
     notOneOf: () => ({ key: 'notUniqueValue' }),
   },
 });
-
+*/
+/*
 const validateURLField = (urlField, rssLinks) => {
   const schema = yup
     .string()
@@ -27,8 +30,8 @@ const validateURLField = (urlField, rssLinks) => {
     .notOneOf(rssLinks);
   return schema.validate(urlField, { abortEarly: false });
 };
-
-const getFormData = (form) => Object.fromEntries(new FormData(form));
+*/
+// const getFormData = (form) => Object.fromEntries(new FormData(form));
 
 const updateFeedsHandler = (state) => {
   const { feeds: allFeeds, posts: allPosts } = state;
@@ -102,6 +105,8 @@ const app = async () => {
   const watchedState = view(state, elements, i18nextInstance);
 
   elements.form.addEventListener('submit', (evt) => {
+    handleFormSubmit(evt, watchedState);
+    /*
     evt.preventDefault();
     watchedState.form.processState = 'submit';
     watchedState.form.validationError = '';
@@ -148,6 +153,7 @@ const app = async () => {
           watchedState.form.processState = 'parserError';
         }
       });
+      */
   });
 
   startFeedsUpdate(watchedState);
