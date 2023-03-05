@@ -1,9 +1,8 @@
 import * as yup from 'yup';
-import axios from 'axios';
 import uniqueId from 'lodash/uniqueId.js';
 import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
-import buildURL from './buildURL.js';
+import sendRequest from './utils/sendRequest.js';
 
 yup.setLocale({
   string: {
@@ -39,19 +38,13 @@ const handleFormSubmit = (evt, state) => {
       state.form.valid = true;
       state.form.validationError = '';
       state.form.processState = 'sending';
-
-      const rssURL = buildURL('https://allorigins.hexlet.app', '/get', {
-        disableCache: true,
-        url: formData.url,
-      });
-      return axios.get(rssURL);
+      return sendRequest(formData.url);
     })
-    .then((response) => response.data)
     .then((data) => {
       state.form.processState = 'loadSuccess';
 
       const parsedRSS = parseRSS(data.contents);
-      state.rssLinks.push(formData.url); // move below
+      state.rssLinks.push(formData.url);
 
       const currentFeedID = uniqueId();
       const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID, uniqueId);

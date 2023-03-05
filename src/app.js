@@ -1,37 +1,11 @@
-// import * as yup from 'yup';
 import i18n from 'i18next';
-import axios from 'axios';
 import uniqueId from 'lodash/uniqueId.js';
 import view from './view.js';
 import resources from './locales/index.js';
 import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
-import buildURL from './buildURL.js';
 import handleFormSubmit from './handleFormSubmit.js';
-
-/*
-yup.setLocale({
-  string: {
-    url: () => ({ key: 'invalidUrl' }),
-  },
-  mixed: {
-    required: () => ({ key: 'requiredUrl' }),
-    notOneOf: () => ({ key: 'notUniqueValue' }),
-  },
-});
-*/
-/*
-const validateURLField = (urlField, rssLinks) => {
-  const schema = yup
-    .string()
-    .trim()
-    .required()
-    .url()
-    .notOneOf(rssLinks);
-  return schema.validate(urlField, { abortEarly: false });
-};
-*/
-// const getFormData = (form) => Object.fromEntries(new FormData(form));
+import sendRequest from './utils/sendRequest.js';
 
 const updateFeedsHandler = (state) => {
   const { feeds: allFeeds, posts: allPosts } = state;
@@ -42,17 +16,12 @@ const updateFeedsHandler = (state) => {
   }
   */
   const allTitles = allPosts.map((post) => post.title);
-  const promises = allFeeds.map(({ rssLink, id }) => {
-    // const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${rssLink}`;
-    const rssURL = buildURL('https://allorigins.hexlet.app', '/get', {
-      disableCache: true,
-      url: rssLink,
-    });
-    return axios.get(rssURL)
-      .then((response) => response.data)
+  const promises = allFeeds.map(({ rssLink, id: feedID }) => {
+    const requestedData = sendRequest(rssLink);
+    return requestedData
       .then((data) => {
         const parsedRSS = parseRSS(data.contents);
-        const { posts } = handlePayload(rssLink, parsedRSS, id, uniqueId);
+        const { posts } = handlePayload(rssLink, parsedRSS, feedID, uniqueId);
         const newPosts = posts
           .filter((post) => !allTitles.includes(post.title));
         return newPosts;
@@ -60,7 +29,9 @@ const updateFeedsHandler = (state) => {
       .catch(() => null);
   });
   return Promise.all(promises)
-    .then((arrayOfNewPosts) => arrayOfNewPosts.flat().filter((el) => el !== null))
+    .then((arrayOfNewPosts) => arrayOfNewPosts
+      .flat()
+      .filter((el) => el !== null))
     .then((newPosts) => {
       state.posts = newPosts.concat(state.posts);
     })
@@ -106,54 +77,6 @@ const app = async () => {
 
   elements.form.addEventListener('submit', (evt) => {
     handleFormSubmit(evt, watchedState);
-    /*
-    evt.preventDefault();
-    watchedState.form.processState = 'submit';
-    watchedState.form.validationError = '';
-
-    const formData = getFormData(evt.target);
-
-    validateURLField(formData.url, watchedState.rssLinks)
-      .then(() => {
-        watchedState.form.valid = true;
-        watchedState.form.validationError = '';
-        watchedState.form.processState = 'sending';
-
-        const rssURL = buildURL('https://allorigins.hexlet.app', '/get', {
-          disableCache: true,
-          url: formData.url,
-        });
-        // const rssURL = `https://allorigins.hexlet.app/get?disableCache=true&url=${formData.url}`;
-        return axios.get(rssURL);
-      })
-      .then((response) => response.data)
-      .then((data) => {
-        watchedState.form.processState = 'loadSuccess';
-
-        const parsedRSS = parseRSS(data.contents);
-        watchedState.rssLinks.push(formData.url); // move below
-
-        const currentFeedID = uniqueId();
-        const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID, uniqueId);
-        watchedState.feeds.unshift(feed);
-        watchedState.posts = posts.concat(watchedState.posts);
-        // setTimeout(() => updateFeedsHandler(watchedState), 10000);
-      })
-      .catch((e) => {
-        // Error messages:
-        // parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
-        if (watchedState.form.processState === 'sending') {
-          watchedState.form.processState = 'networkError';
-        }
-        if (watchedState.form.processState === 'submit') {
-          watchedState.form.validationError = e.message.key;
-          watchedState.form.processState = 'filling';
-        }
-        if (watchedState.form.processState === 'loadSuccess') {
-          watchedState.form.processState = 'parserError';
-        }
-      });
-      */
   });
 
   startFeedsUpdate(watchedState);
