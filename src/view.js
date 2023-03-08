@@ -1,4 +1,5 @@
 import onChange from 'on-change';
+import openModal from './handleModalOpening';
 // import has from 'lodash/has.js';
 
 const renderInput = (input, isValid) => {
@@ -53,7 +54,7 @@ const renderFeed = ({ title, description }) => {
   return liElem;
 };
 
-const renderPost = ({ title, link, id }, i18next) => {
+const renderPost = ({ title, link, id }, i18next, state) => {
   const liElem = document.createElement('li');
   liElem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -76,18 +77,21 @@ const renderPost = ({ title, link, id }, i18next) => {
   btnElem.setAttribute('data-id', id);
   btnElem.setAttribute('data-bs-toggle', 'modal');
   btnElem.setAttribute('data-bs-target', '#modal');
+  btnElem.addEventListener('click', (evt) => {
+    openModal(evt, state);
+  });
 
   liElem.replaceChildren(linkElem, btnElem);
 
   return liElem;
 };
 
-const renderItems = (items, container, cb, i18next) => {
+const renderItems = (items, container, cb, i18next, state) => {
   container.innerHTML = '';
 
   const ulElem = document.createElement('ul');
   ulElem.classList.add('list-group', 'border-0', 'rounded-0');
-  const liElems = items.map((item) => cb(item, i18next));
+  const liElems = items.map((item) => cb(item, i18next, state));
 
   ulElem.replaceChildren(...liElems);
 
@@ -163,7 +167,7 @@ const view = (state, elements, i18next) => {
     }
 
     if (path === 'posts') {
-      renderItems(value, postsContainer, renderPost, i18next);
+      renderItems(value, postsContainer, renderPost, i18next, watchedState);
     }
   });
 

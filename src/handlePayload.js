@@ -2,7 +2,7 @@ const handlePayload = (rssLink, parsedRSS, feedID, getPostID) => {
   const { feed: feedData, posts: postsData } = parsedRSS;
 
   const feed = {
-    id: feedID, // feedID, // uniqueId(),
+    id: feedID,
     title: feedData.title.trim(),
     description: feedData.description.trim(),
     rssLink,

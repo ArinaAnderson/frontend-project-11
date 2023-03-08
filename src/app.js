@@ -60,7 +60,7 @@ const app = async () => {
       response: null,
       valid: null,
       validationError: '',
-      processState: 'filling', // 'validation','submit', 'sending', 'networkError', 'loadSuccess'
+      processState: 'filling',
     },
   };
 
@@ -68,7 +68,7 @@ const app = async () => {
 
   const i18nextInstance = i18n.createInstance();
   await i18nextInstance.init({
-    lng: defaultLang, // defaultLang,
+    lng: defaultLang,
     debug: true,
     resources,
   });
