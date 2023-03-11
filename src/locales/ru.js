@@ -12,6 +12,11 @@ export default {
       parserError: 'Ресурс не содержит валидный RSS',
     },
     viewPostButton: 'Просмотр',
+
+    sectionsTitles: {
+      feeds: 'Фиды',
+      posts: 'Посты',
+    },
   },
 };
 /*

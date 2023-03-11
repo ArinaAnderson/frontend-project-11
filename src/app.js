@@ -48,8 +48,8 @@ const app = async () => {
     urlField: document.querySelector('#url-input'),
     feedback: document.querySelector('.feedback'),
     submitBtn: document.querySelector('button[type="submit"]'),
-    feedsContainer: document.querySelector('.feeds-container'),
-    postsContainer: document.querySelector('.posts-container'),
+    feedsContainer: document.querySelector('#feeds'),
+    postsContainer: document.querySelector('#posts'),
   };
 
   const state = {

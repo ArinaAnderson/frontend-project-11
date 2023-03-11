@@ -53,7 +53,7 @@ const renderFeed = ({ title, description }) => {
 
   return liElem;
 };
-// state post type: 'opened' 'notOpened'
+
 const stylizePostLink = (postID, linkElem, state) => {
   if (state.uiState.openedPostsIDs.has(postID)) {
     linkElem.classList.remove('fw-bold');
@@ -68,7 +68,6 @@ const renderPost = ({ title, link, id }, i18next, state) => {
   liElem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
   const linkElem = document.createElement('a');
-  // linkElem.classList.add('fw-bold');// ('fw-normal', 'link-secondary');
   stylizePostLink(id, linkElem, state);
   linkElem.textContent = title;
   linkElem.setAttribute('href', link);
@@ -80,7 +79,6 @@ const renderPost = ({ title, link, id }, i18next, state) => {
     state.uiState.openedPostsIDs.add(id);
     stylizePostLink(id, evt.target, state);
   });
-  // linkElem.setAttribute('rel', 'noopener', 'noreferrer');
 
   const btnElem = document.createElement('button');
   btnElem.classList.add('btn', 'btn-outline-primary', 'btn-sm');
@@ -104,6 +102,14 @@ const renderPost = ({ title, link, id }, i18next, state) => {
 
 const renderItems = (items, container, cb, i18next, state) => {
   container.innerHTML = '';
+
+  const titleWrap = document.createElement('div');
+  titleWrap.classList.add('card-body');
+  const title = document.createElement('h2');
+  title.classList.add('card-title', 'h4');
+  title.textContent = i18next.t(`sectionsTitles.${container.id}`);
+  titleWrap.appendChild(title);
+  container.appendChild(titleWrap);
 
   const ulElem = document.createElement('ul');
   ulElem.classList.add('list-group', 'border-0', 'rounded-0');
@@ -163,11 +169,8 @@ const handleValidationError = (validationError, elements, i18next) => {
 const view = (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
     const {
-      // feedback,
-      // urlField,
       feedsContainer,
       postsContainer,
-      // submitBtn,
     } = elements;
 
     if (path === 'form.validationError') {
@@ -179,7 +182,7 @@ const view = (state, elements, i18next) => {
     }
 
     if (path === 'feeds') {
-      renderItems(value, feedsContainer, renderFeed);
+      renderItems(value, feedsContainer, renderFeed, i18next);
     }
 
     if (path === 'posts') {
