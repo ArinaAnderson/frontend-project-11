@@ -62,6 +62,9 @@ const app = async () => {
       validationError: '',
       processState: 'filling',
     },
+    uiState: {
+      openedPostsIDs: new Set(),
+    },
   };
 
   const defaultLang = 'ru';

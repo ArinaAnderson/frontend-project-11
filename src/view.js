@@ -53,20 +53,32 @@ const renderFeed = ({ title, description }) => {
 
   return liElem;
 };
+// state post type: 'opened' 'notOpened'
+const stylizePostLink = (postID, linkElem, state) => {
+  if (state.uiState.openedPostsIDs.has(postID)) {
+    linkElem.classList.remove('fw-bold');
+    linkElem.classList.add('fw-normal', 'link-secondary');
+  } else {
+    linkElem.classList.add('fw-bold');
+  }
+};
 
 const renderPost = ({ title, link, id }, i18next, state) => {
   const liElem = document.createElement('li');
   liElem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
   const linkElem = document.createElement('a');
-  linkElem.classList.add('fw-bold');// ('fw-normal', 'link-secondary');
+  // linkElem.classList.add('fw-bold');// ('fw-normal', 'link-secondary');
+  stylizePostLink(id, linkElem, state);
   linkElem.textContent = title;
   linkElem.setAttribute('href', link);
   linkElem.setAttribute('target', '_blank');
   linkElem.setAttribute('data-id', id);
-  linkElem.addEventListener('click', () => {
-    linkElem.classList.remove('fw-bold');
-    linkElem.classList.add('fw-normal', 'link-secondary');
+  linkElem.setAttribute('rel', 'noopener');
+  linkElem.setAttribute('rel', 'noreferrer');
+  linkElem.addEventListener('click', (evt) => {
+    state.uiState.openedPostsIDs.add(id);
+    stylizePostLink(id, evt.target, state);
   });
   // linkElem.setAttribute('rel', 'noopener', 'noreferrer');
 
@@ -79,12 +91,16 @@ const renderPost = ({ title, link, id }, i18next, state) => {
   btnElem.setAttribute('data-bs-target', '#modal');
   btnElem.addEventListener('click', (evt) => {
     openModal(evt, state);
+    state.uiState.openedPostsIDs.add(id);
+    stylizePostLink(id, linkElem, state);
   });
 
   liElem.replaceChildren(linkElem, btnElem);
 
   return liElem;
 };
+
+// mapping type - post feed --> different set of arguments
 
 const renderItems = (items, container, cb, i18next, state) => {
   container.innerHTML = '';
