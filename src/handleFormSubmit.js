@@ -4,17 +4,17 @@ import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
 import sendRequest from './utils/sendRequest.js';
 
-yup.setLocale({
-  string: {
-    url: () => ({ key: 'invalidUrl' }),
-  },
-  mixed: {
-    required: () => ({ key: 'requiredUrl' }),
-    notOneOf: () => ({ key: 'notUniqueValue' }),
-  },
-});
-
 const validateURLField = (urlField, rssLinks) => {
+  yup.setLocale({
+    string: {
+      url: () => ({ key: 'invalidUrl' }),
+    },
+    mixed: {
+      required: () => ({ key: 'requiredUrl' }),
+      notOneOf: () => ({ key: 'notUniqueValue' }),
+    },
+  });
+
   const schema = yup
     .string()
     .trim()
