@@ -101,6 +101,10 @@ const renderPost = ({ title, link, id }, i18next, state) => {
 // mapping type - post feed --> different set of arguments
 
 const renderItems = (items, container, cb, i18next, state) => {
+  if (items.length === 0) {
+    return;
+  }
+
   container.innerHTML = '';
 
   const titleWrap = document.createElement('div');
