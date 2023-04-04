@@ -137,8 +137,8 @@ const handleFormProcessState = (processStateVal, elements, i18next) => {
   switch (processStateVal) {
     case 'submit':
       renderFeedback(elements.feedback, true);
-      elements.submitBtn.disabled = true;
-      elements.urlField.disabled = true;
+      // elements.submitBtn.disabled = true;
+      // elements.urlField.disabled = true;
       break;
 
     case 'sending':
