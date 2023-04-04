@@ -4,7 +4,7 @@ import resources from './locales/index.js';
 import handleFormSubmit from './handleFormSubmit.js';
 import startFeedsUpdate from './updateFeeds';
 
-const app = () => { // async
+const app = () => {
   const elements = {
     form: document.querySelector('.rss-form'),
     urlField: document.querySelector('#url-input'),
@@ -32,13 +32,6 @@ const app = () => { // async
   const defaultLang = 'ru';
 
   const i18nextInstance = i18n.createInstance();
-  /*
-  await i18nextInstance.init({
-    lng: defaultLang,
-    debug: true,
-    resources,
-  });
-  */
   i18nextInstance.init({
     lng: defaultLang,
     debug: true,

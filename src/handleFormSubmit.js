@@ -34,9 +34,8 @@ const handleFormSubmit = (evt, state) => {
   const formData = getFormData(evt.target);
 
   const rssLinks = state.feeds.map(({ rssLink }) => rssLink);
-  console.log(rssLinks[0], 'SPIRAL');
 
-  validateURLField(formData.url, rssLinks)// state.rssLinks)
+  validateURLField(formData.url, rssLinks)
     .then(() => {
       state.form.valid = true;
       state.form.validationError = '';
@@ -47,7 +46,6 @@ const handleFormSubmit = (evt, state) => {
       state.form.processState = 'loadSuccess';
 
       const parsedRSS = parseRSS(data.contents);
-      // state.rssLinks.push(formData.url);
 
       const currentFeedID = uniqueId();
       const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID, uniqueId);
@@ -55,8 +53,6 @@ const handleFormSubmit = (evt, state) => {
       state.posts = posts.concat(state.posts);
     })
     .catch((e) => {
-      // Error messages:
-      // parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
       if (state.form.processState === 'sending') {
         state.form.processState = 'networkError';
       }

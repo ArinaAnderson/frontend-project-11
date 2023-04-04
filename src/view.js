@@ -1,5 +1,4 @@
 import onChange from 'on-change';
-// import has from 'lodash/has.js';
 
 const openModal = (evt, state) => {
   evt.preventDefault();
@@ -41,7 +40,6 @@ const feedbackMapping = {
 
 const renderFeedback = (feedbackElem, isHidden, text, state) => {
   if (isHidden) {
-    // feedbackElem.textContent = '';
     feedbackElem.classList.add('d-none');
     return;
   }
@@ -111,8 +109,6 @@ const renderPost = ({ title, link, id }, i18next, state) => {
   return liElem;
 };
 
-// mapping type - post feed --> different set of arguments
-
 const renderItems = (items, container, cb, i18next, state) => {
   if (items.length === 0) {
     return;
@@ -142,30 +138,36 @@ const handleFormProcessState = (processStateVal, elements, i18next) => {
     case 'submit':
       renderFeedback(elements.feedback, true);
       elements.submitBtn.disabled = true;
+      elements.urlField.disabled = true;
       break;
 
     case 'sending':
       elements.submitBtn.disabled = true;
+      elements.urlField.disabled = true;
       break;
 
     case 'loadSuccess':
       resetForm(elements.form, elements.urlField);
       renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'success');
       elements.submitBtn.disabled = false;
+      elements.urlField.disabled = false;
       break;
 
     case 'networkError':
       renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'error');
       elements.submitBtn.disabled = false;
+      elements.urlField.disabled = false;
       break;
 
     case 'parserError':
       renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'error');
       elements.submitBtn.disabled = false;
+      elements.urlField.disabled = false;
       break;
 
     case 'filling':
       elements.submitBtn.disabled = false;
+      elements.urlField.disabled = false;
       break;
 
     default:

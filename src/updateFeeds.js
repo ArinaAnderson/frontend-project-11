@@ -7,12 +7,7 @@ const TIME_INTERVAL = 5000;
 
 const updateFeedsHandler = (state) => {
   const { feeds: allFeeds, posts: allPosts } = state;
-  /*
-  if (allPosts.length === 0) {
-    // return null;
-    setTimeout(() => updateFeedsHandler(state), 5000);
-  }
-  */
+
   const allTitles = allPosts.map((post) => post.title);
   const promises = allFeeds.map(({ rssLink, id: feedID }) => {
     const requestedData = sendRequest(rssLink);
