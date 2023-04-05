@@ -25,11 +25,26 @@ const app = () => {
       processState: 'filling',
     },
     uiState: {
-      openedPostsIDs: new Set(),
+      postID: null,
+      isPopupOpen: false,
+      openedLinksIDs: new Set(),
     },
   };
 
   const defaultLang = 'ru';
+
+  const postElementsHandlers = {
+    button: (id, stat, evt) => {
+      evt.preventDefault();
+      stat.uiState.postID = id;
+      stat.uiState.isPopupOpen = true;
+      stat.uiState.openedLinksIDs.add(id);
+    },
+    a: (id, stat) => {
+      stat.uiState.postID = id;
+      stat.uiState.openedLinksIDs.add(id);
+    },
+  };
 
   const i18nextInstance = i18n.createInstance();
   i18nextInstance.init({
@@ -41,6 +56,12 @@ const app = () => {
 
     elements.form.addEventListener('submit', (evt) => {
       handleFormSubmit(evt, watchedState);
+    });
+
+    elements.postsContainer.addEventListener('click', (evt) => {
+      const evtTargetHandler = evt.target.tagName.toLowerCase();
+      const evtTargetID = evt.target.dataset.id;
+      postElementsHandlers[evtTargetHandler](evtTargetID, watchedState, evt);
     });
 
     startFeedsUpdate(watchedState);

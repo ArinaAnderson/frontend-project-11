@@ -1,9 +1,6 @@
 import onChange from 'on-change';
 
-const openModal = (evt, state) => {
-  evt.preventDefault();
-  const btn = evt.target;
-  const postID = btn.dataset.id;
+const openModal = (postID, state) => {
   const { title, description, link } = state.posts.find((post) => post.id === postID);
   const modal = document.querySelector('#modal');
   const modalTitle = modal.querySelector('.modal-title');
@@ -38,6 +35,15 @@ const feedbackMapping = {
   },
 };
 
+const stylizePostLink = (postID, linkElem, state) => {
+  if (state.uiState.openedLinksIDs.has(postID)) {
+    linkElem.classList.remove('fw-bold');
+    linkElem.classList.add('fw-normal', 'link-secondary');
+  } else {
+    linkElem.classList.add('fw-bold');
+  }
+};
+
 const renderFeedback = (feedbackElem, isHidden, text, state) => {
   if (isHidden) {
     feedbackElem.classList.add('d-none');
@@ -65,15 +71,6 @@ const renderFeed = ({ title, description }) => {
   return liElem;
 };
 
-const stylizePostLink = (postID, linkElem, state) => {
-  if (state.uiState.openedPostsIDs.has(postID)) {
-    linkElem.classList.remove('fw-bold');
-    linkElem.classList.add('fw-normal', 'link-secondary');
-  } else {
-    linkElem.classList.add('fw-bold');
-  }
-};
-
 const renderPost = ({ title, link, id }, i18next, state) => {
   const liElem = document.createElement('li');
   liElem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
@@ -86,10 +83,12 @@ const renderPost = ({ title, link, id }, i18next, state) => {
   linkElem.setAttribute('data-id', id);
   linkElem.setAttribute('rel', 'noopener');
   linkElem.setAttribute('rel', 'noreferrer');
+  /*
   linkElem.addEventListener('click', (evt) => {
     state.uiState.openedPostsIDs.add(id);
     stylizePostLink(id, evt.target, state);
   });
+  */
 
   const btnElem = document.createElement('button');
   btnElem.classList.add('btn', 'btn-outline-primary', 'btn-sm');
@@ -98,12 +97,13 @@ const renderPost = ({ title, link, id }, i18next, state) => {
   btnElem.setAttribute('data-id', id);
   btnElem.setAttribute('data-bs-toggle', 'modal');
   btnElem.setAttribute('data-bs-target', '#modal');
+  /*
   btnElem.addEventListener('click', (evt) => {
-    openModal(evt, state);
+    // openModal(evt, state);
     state.uiState.openedPostsIDs.add(id);
-    stylizePostLink(id, linkElem, state);
+    // stylizePostLink(id, linkElem, state);
   });
-
+  */
   liElem.replaceChildren(linkElem, btnElem);
 
   return liElem;
@@ -137,8 +137,6 @@ const handleFormProcessState = (processStateVal, elements, i18next) => {
   switch (processStateVal) {
     case 'submit':
       renderFeedback(elements.feedback, true);
-      // elements.submitBtn.disabled = true;
-      // elements.urlField.disabled = true;
       break;
 
     case 'sending':
@@ -206,6 +204,11 @@ const view = (state, elements, i18next) => {
 
     if (path === 'posts') {
       renderItems(value, postsContainer, renderPost, i18next, watchedState);
+    }
+
+    if (path === 'uiState.isPopupOpen') {
+      const postID = watchedState.uiState.popupID;
+      openModal(postID, watchedState);
     }
   });
 
