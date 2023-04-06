@@ -13,14 +13,29 @@ const updateFeedsHandler = (state) => {
     const requestedData = sendRequest(rssLink);
     return requestedData
       .then((data) => {
+        // if (data.status === 'fulfilled') {
+        // const parsedRSS = parseRSS(data.value.contents);
         const parsedRSS = parseRSS(data.contents);
         const { posts } = handlePayload(rssLink, parsedRSS, feedID, uniqueId);
         const newPosts = posts
           .filter((post) => !allTitles.includes(post.title));
-        return newPosts;
-      })
-      .catch(() => null);
+        state.posts = newPosts.concat(state.posts);
+        // }
+      });
+    /*
+    .then((data) => {
+        const parsedRSS = parseRSS(data.contents);
+        const { posts } = handlePayload(rssLink, parsedRSS, feedID, uniqueId);
+        const newPosts = posts
+          .filter((post) => !allTitles.includes(post.title));
+        state.posts = newPosts.concat(state.posts);
+        // return newPosts;
+      });
+    */
   });
+  return Promise.allSettled(promises)
+    .finally(() => setTimeout(() => updateFeedsHandler(state), TIME_INTERVAL));
+  /*
   return Promise.all(promises)
     .then((arrayOfNewPosts) => arrayOfNewPosts
       .flat()
@@ -29,6 +44,7 @@ const updateFeedsHandler = (state) => {
       state.posts = newPosts.concat(state.posts);
     })
     .then(() => setTimeout(() => updateFeedsHandler(state), TIME_INTERVAL));
+  */
 };
 
 const startFeedsUpdate = (state) => {
