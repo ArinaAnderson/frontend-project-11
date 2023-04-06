@@ -49,6 +49,7 @@ const handleFormSubmit = (evt, state) => {
 
       const currentFeedID = uniqueId();
       const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID, uniqueId);
+      console.log('SPIRAL', posts);
       state.feeds.unshift(feed);
       state.posts = posts.concat(state.posts);
     })

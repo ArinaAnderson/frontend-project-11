@@ -34,15 +34,16 @@ const app = () => {
   const defaultLang = 'ru';
 
   const postElementsHandlers = {
-    button: (id, stat, evt) => {
+    button: (id, stateData, evt) => {
       evt.preventDefault();
-      stat.uiState.postID = id;
-      stat.uiState.isPopupOpen = true;
-      stat.uiState.openedLinksIDs.add(id);
+      stateData.uiState.postID = id;
+      stateData.uiState.isPopupOpen = true;
+      stateData.uiState.openedLinksIDs.add(id);
+      stateData.uiState.isPopupOpen = false;
     },
-    a: (id, stat) => {
-      stat.uiState.postID = id;
-      stat.uiState.openedLinksIDs.add(id);
+    a: (id, stateData) => {
+      stateData.uiState.postID = id;
+      stateData.uiState.openedLinksIDs.add(id);
     },
   };
 

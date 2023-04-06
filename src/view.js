@@ -207,8 +207,10 @@ const view = (state, elements, i18next) => {
     }
 
     if (path === 'uiState.isPopupOpen') {
-      const postID = watchedState.uiState.popupID;
-      openModal(postID, watchedState);
+      if (value === true) {
+        const { postID } = watchedState.uiState;
+        openModal(postID, watchedState);
+      }
     }
   });
 
