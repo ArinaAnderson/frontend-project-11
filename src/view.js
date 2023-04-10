@@ -83,12 +83,6 @@ const renderPost = ({ title, link, id }, i18next, state) => {
   linkElem.setAttribute('data-id', id);
   linkElem.setAttribute('rel', 'noopener');
   linkElem.setAttribute('rel', 'noreferrer');
-  /*
-  linkElem.addEventListener('click', (evt) => {
-    state.uiState.openedPostsIDs.add(id);
-    stylizePostLink(id, evt.target, state);
-  });
-  */
 
   const btnElem = document.createElement('button');
   btnElem.classList.add('btn', 'btn-outline-primary', 'btn-sm');
@@ -97,13 +91,6 @@ const renderPost = ({ title, link, id }, i18next, state) => {
   btnElem.setAttribute('data-id', id);
   btnElem.setAttribute('data-bs-toggle', 'modal');
   btnElem.setAttribute('data-bs-target', '#modal');
-  /*
-  btnElem.addEventListener('click', (evt) => {
-    // openModal(evt, state);
-    state.uiState.openedPostsIDs.add(id);
-    // stylizePostLink(id, linkElem, state);
-  });
-  */
   liElem.replaceChildren(linkElem, btnElem);
 
   return liElem;
@@ -209,7 +196,9 @@ const view = (state, elements, i18next) => {
     if (path === 'uiState.isPopupOpen') {
       if (value === true) {
         const { postID } = watchedState.uiState;
+        const linkElem = document.querySelector(`a[data-id="${postID}"]`);
         openModal(postID, watchedState);
+        stylizePostLink(postID, linkElem, watchedState);
       }
     }
   });

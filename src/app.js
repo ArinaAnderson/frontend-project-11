@@ -20,7 +20,7 @@ const app = () => {
     posts: [],
     form: {
       response: null,
-      valid: null,
+      // valid: null,
       validationError: '',
       processState: 'filling',
     },
