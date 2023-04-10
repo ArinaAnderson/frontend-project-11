@@ -5,18 +5,6 @@ import handlePayload from './handlePayload.js';
 import sendRequest from './utils/sendRequest.js';
 
 const validateURLField = (urlField, rssLinks) => {
-  /*
-  yup.setLocale({
-    string: {
-      url: () => ({ key: 'invalidUrl' }),
-    },
-    mixed: {
-      required: () => ({ key: 'requiredUrl' }),
-      notOneOf: () => ({ key: 'notUniqueValue' }),
-    },
-  });
-  */
-
   const schema = yup
     .string()
     .trim()
@@ -26,23 +14,24 @@ const validateURLField = (urlField, rssLinks) => {
   return schema.validate(urlField, { abortEarly: false });
 };
 
-const getFormData = (form) => Object.fromEntries(new FormData(form));
+// const getFormData = (form) => Object.fromEntries(new FormData(form));
 
 const handleFormSubmit = (evt, state) => {
   evt.preventDefault();
   state.form.processState = 'submit';
   state.form.validationError = null;
 
-  const formData = getFormData(evt.target);
+  // const formData = new FormData(evt.target); // getFormData(evt.target);
+  const urlData = new FormData(evt.target).get('url');
 
   const rssLinks = state.feeds.map(({ rssLink }) => rssLink);
 
-  validateURLField(formData.url, rssLinks)
+  validateURLField(urlData, rssLinks)// formData.url, rssLinks)
     .then(() => {
       state.form.valid = true;
       state.form.validationError = null;
       state.form.processState = 'sending';
-      return sendRequest(formData.url);
+      return sendRequest(urlData);
     })
     .then((data) => {
       state.form.processState = 'loadSuccess';
@@ -50,7 +39,7 @@ const handleFormSubmit = (evt, state) => {
       const parsedRSS = parseRSS(data.contents);
 
       const currentFeedID = uniqueId();
-      const { feed, posts } = handlePayload(formData.url, parsedRSS, currentFeedID, uniqueId);
+      const { feed, posts } = handlePayload(urlData, parsedRSS, currentFeedID, uniqueId);
       state.feeds.unshift(feed);
       state.posts = posts.concat(state.posts);
     })
