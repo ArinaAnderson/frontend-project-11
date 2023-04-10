@@ -21,7 +21,7 @@ const app = () => {
     form: {
       response: null,
       // valid: null,
-      validationError: '',
+      validationError: null,
       processState: 'filling',
     },
     uiState: {

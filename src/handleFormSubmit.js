@@ -29,7 +29,7 @@ const getFormData = (form) => Object.fromEntries(new FormData(form));
 const handleFormSubmit = (evt, state) => {
   evt.preventDefault();
   state.form.processState = 'submit';
-  state.form.validationError = '';
+  state.form.validationError = null;
 
   const formData = getFormData(evt.target);
 
@@ -38,7 +38,7 @@ const handleFormSubmit = (evt, state) => {
   validateURLField(formData.url, rssLinks)
     .then(() => {
       state.form.valid = true;
-      state.form.validationError = '';
+      state.form.validationError = null;
       state.form.processState = 'sending';
       return sendRequest(formData.url);
     })

@@ -161,7 +161,7 @@ const handleFormProcessState = (processStateVal, elements, i18next) => {
 };
 
 const handleValidationError = (validationError, elements, i18next) => {
-  if (validationError.length === 0) {
+  if (validationError === null) {
     renderInput(elements.urlField, true);
     renderFeedback(elements.feedback, true);
   } else {
