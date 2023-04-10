@@ -1,3 +1,4 @@
+import * as yup from 'yup';
 import i18n from 'i18next';
 import view from './view.js';
 import resources from './locales/index.js';
@@ -5,6 +6,16 @@ import handleFormSubmit from './handleFormSubmit.js';
 import startFeedsUpdate from './updateFeeds';
 
 const app = () => {
+  yup.setLocale({
+    string: {
+      url: () => ({ key: 'invalidUrl' }),
+    },
+    mixed: {
+      required: () => ({ key: 'requiredUrl' }),
+      notOneOf: () => ({ key: 'notUniqueValue' }),
+    },
+  });
+
   const elements = {
     form: document.querySelector('.rss-form'),
     urlField: document.querySelector('#url-input'),
@@ -15,12 +26,10 @@ const app = () => {
   };
 
   const state = {
-    rssLinks: [],
     feeds: [],
     posts: [],
     form: {
       response: null,
-      // valid: null,
       validationError: null,
       processState: 'filling',
     },

@@ -5,6 +5,7 @@ import handlePayload from './handlePayload.js';
 import sendRequest from './utils/sendRequest.js';
 
 const validateURLField = (urlField, rssLinks) => {
+  /*
   yup.setLocale({
     string: {
       url: () => ({ key: 'invalidUrl' }),
@@ -14,6 +15,7 @@ const validateURLField = (urlField, rssLinks) => {
       notOneOf: () => ({ key: 'notUniqueValue' }),
     },
   });
+  */
 
   const schema = yup
     .string()
