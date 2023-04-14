@@ -34,7 +34,7 @@ const handleFormSubmit = (evt, state) => {
       return sendRequest(urlData);
     })
     .then((data) => {
-      state.form.processState = 'loadSuccess';
+      // state.form.processState = 'loadSuccess';
 
       const parsedRSS = parseRSS(data.contents);
 
@@ -43,7 +43,36 @@ const handleFormSubmit = (evt, state) => {
       state.feeds.unshift(feed);
       state.posts = posts.concat(state.posts);
     })
+    .then(() => {
+      state.form.processState = 'loadSuccess'; // 'filling';
+    })
     .catch((e) => {
+      console.log('BASYAYAYA!!!', JSON.stringify(e.message));// JSON.stringify(e, null, '  '));
+      // Error messages:
+      // parseError, {key: 'invalidUrl'}, {key: 'notUniqueValue'}, Network Error
+
+      // {key: 'invalidUrl'} /// parseError /// {key: 'notUniqueValue'}
+      if (e.message === 'Network Error') {
+        state.form.processState = 'networkError';
+      }
+      /*
+      if (state.form.processState === 'sending') {
+        state.form.processState = 'networkError';
+      }
+      */
+      if (e.message === 'parseError') {
+        state.form.processState = 'parserError';
+      }
+      /*
+      if (state.form.processState === 'loadSuccess') {
+        state.form.processState = 'parserError';
+      }
+      */
+      if (state.form.processState === 'submit') {
+        state.form.validationError = e.message.key;
+        // state.form.processState = 'filling';
+      }
+      /*
       if (state.form.processState === 'sending') {
         state.form.processState = 'networkError';
       }
@@ -54,7 +83,58 @@ const handleFormSubmit = (evt, state) => {
       if (state.form.processState === 'loadSuccess') {
         state.form.processState = 'parserError';
       }
+      */
     });
 };
+/*
+{
+  "value": "njhjkhkj",
+  "errors": [
+    {
+      "key": "invalidUrl"
+    }
+  ],
+  "inner": [
+    {
+      "value": "njhjkhkj",
+      "path": "",
+      "type": "url",
+      "errors": [
+        {
+          "key": "invalidUrl"
+        }
+      ],
+      "params": {
+        "value": "njhjkhkj",
+        "originalValue": "njhjkhkj",
+        "path": "",
+        "regex": {}
+      },
+      "inner": [],
+      "name": "ValidationError",
+      "message": {
+        "key": "invalidUrl"
+      }
+    }
+  ],
+  "name": "ValidationError",
+  "message": {
+    "key": "invalidUrl"
+  }
+}
+
+switch (err.message) {
+        case ('notValidDouble'):
+          watchedState.messageError = 'notValidDouble';
+          break;
+        case ('notValidUrl'):
+          watchedState.messageError = 'notValidUrl';
+          break;
+        case ('Parser Error'):
+          watchedState.messageError = 'notValidRss';
+          break;
+        case ('Network Error'):
+          watchedState.messageError = 'networkError';
+*/
 
 export default handleFormSubmit;

@@ -48,7 +48,7 @@ const app = () => {
       stateData.uiState.postID = id;
       stateData.uiState.isPopupOpen = true;
       stateData.uiState.openedLinksIDs.add(id);
-      stateData.uiState.isPopupOpen = false;
+      // stateData.uiState.isPopupOpen = false;
     },
     a: (id, stateData) => {
       stateData.uiState.postID = id;
@@ -69,6 +69,7 @@ const app = () => {
     });
 
     elements.postsContainer.addEventListener('click', (evt) => {
+      console.log(evt.target);
       const evtTargetHandler = evt.target.tagName.toLowerCase();
       const evtTargetID = evt.target.dataset.id;
       postElementsHandlers[evtTargetHandler](evtTargetID, watchedState, evt);

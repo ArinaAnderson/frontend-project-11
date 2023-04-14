@@ -1,6 +1,17 @@
 import onChange from 'on-change';
 
+const stylizePostLink = (postID, linkElem, state) => {
+  if (state.uiState.openedLinksIDs.has(postID)) {
+    linkElem.classList.remove('fw-bold');
+    linkElem.classList.add('fw-normal', 'link-secondary');
+  } else {
+    linkElem.classList.add('fw-bold');
+  }
+};
+
 const openModal = (postID, state) => {
+  const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+  stylizePostLink(postID, linkElem, state);
   const { title, description, link } = state.posts.find((post) => post.id === postID);
   const modal = document.querySelector('#modal');
   const modalTitle = modal.querySelector('.modal-title');
@@ -33,15 +44,6 @@ const feedbackMapping = {
     feedback.classList.remove('text-success');
     feedback.classList.add('text-danger');
   },
-};
-
-const stylizePostLink = (postID, linkElem, state) => {
-  if (state.uiState.openedLinksIDs.has(postID)) {
-    linkElem.classList.remove('fw-bold');
-    linkElem.classList.add('fw-normal', 'link-secondary');
-  } else {
-    linkElem.classList.add('fw-bold');
-  }
 };
 
 const renderFeedback = (feedbackElem, isHidden, text, state) => {
@@ -144,17 +146,18 @@ const handleFormProcessState = (processStateVal, elements, i18next) => {
       elements.urlField.disabled = false;
       break;
 
-    case 'parserError':
+    case 'parserError': // might not be needed
       renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'error');
       elements.submitBtn.disabled = false;
       elements.urlField.disabled = false;
       break;
-
+    /*
     case 'filling':
+      // resetForm(elements.form, elements.urlField);
       elements.submitBtn.disabled = false;
       elements.urlField.disabled = false;
       break;
-
+    */
     default:
       throw new Error(`Unknown process state: ${processStateVal}`);
   }
@@ -196,9 +199,10 @@ const view = (state, elements, i18next) => {
     if (path === 'uiState.isPopupOpen') {
       if (value === true) {
         const { postID } = watchedState.uiState;
-        const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+        // const linkElem = document.querySelector(`a[data-id="${postID}"]`);
         openModal(postID, watchedState);
-        stylizePostLink(postID, linkElem, watchedState);
+        // const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+        // stylizePostLink(postID, linkElem, watchedState);
       }
     }
   });
