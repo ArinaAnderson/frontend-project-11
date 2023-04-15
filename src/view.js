@@ -10,8 +10,6 @@ const stylizePostLink = (postID, linkElem, state) => {
 };
 
 const openModal = (postID, state) => {
-  const linkElem = document.querySelector(`a[data-id="${postID}"]`);
-  stylizePostLink(postID, linkElem, state);
   const { title, description, link } = state.posts.find((post) => post.id === postID);
   const modal = document.querySelector('#modal');
   const modalTitle = modal.querySelector('.modal-title');
@@ -146,18 +144,12 @@ const handleFormProcessState = (processStateVal, elements, i18next) => {
       elements.urlField.disabled = false;
       break;
 
-    case 'parserError': // might not be needed
+    case 'parserError':
       renderFeedback(elements.feedback, false, i18next.t(`processState.${processStateVal}`), 'error');
       elements.submitBtn.disabled = false;
       elements.urlField.disabled = false;
       break;
-    /*
-    case 'filling':
-      // resetForm(elements.form, elements.urlField);
-      elements.submitBtn.disabled = false;
-      elements.urlField.disabled = false;
-      break;
-    */
+
     default:
       throw new Error(`Unknown process state: ${processStateVal}`);
   }
@@ -199,10 +191,9 @@ const view = (state, elements, i18next) => {
     if (path === 'uiState.isPopupOpen') {
       if (value === true) {
         const { postID } = watchedState.uiState;
-        // const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+        const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+        stylizePostLink(postID, linkElem, watchedState);
         openModal(postID, watchedState);
-        // const linkElem = document.querySelector(`a[data-id="${postID}"]`);
-        // stylizePostLink(postID, linkElem, watchedState);
       }
     }
   });

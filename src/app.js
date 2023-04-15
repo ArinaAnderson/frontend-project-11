@@ -8,11 +8,11 @@ import startFeedsUpdate from './updateFeeds';
 const app = () => {
   yup.setLocale({
     string: {
-      url: () => ({ key: 'invalidUrl' }),
+      url: 'invalidUrl',
     },
     mixed: {
-      required: () => ({ key: 'requiredUrl' }),
-      notOneOf: () => ({ key: 'notUniqueValue' }),
+      required: 'requiredUrl',
+      notOneOf: 'notUniqueValue',
     },
   });
 
@@ -48,7 +48,6 @@ const app = () => {
       stateData.uiState.postID = id;
       stateData.uiState.isPopupOpen = true;
       stateData.uiState.openedLinksIDs.add(id);
-      // stateData.uiState.isPopupOpen = false;
     },
     a: (id, stateData) => {
       stateData.uiState.postID = id;
