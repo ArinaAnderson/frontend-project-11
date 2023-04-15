@@ -1,7 +1,8 @@
 /* eslint-disable global-require */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const MiniCssExtractPlugin = require('mini-css-extraxt-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   // трассировка путей в то время как мы получаем ошибку
@@ -24,14 +25,13 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        // use: [MiniCssExtractPlugin.loader, 'css-loader'],
-        use: ['style-loader', 'css-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.(scss)$/,
         use: [
           {
-            loader: 'style-loader',
+            loader: MiniCssExtractPlugin.loader,
           },
           {
             loader: 'css-loader',
@@ -56,6 +56,11 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
+    }),
+    // new TerserPlugin({
+    // }),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
     }),
   ],
   devServer: {
