@@ -10,8 +10,8 @@ const stylizePostLink = (postID, linkElem, state) => {
 };
 
 const openModal = (postID, state) => {
-  const linkElem = document.querySelector(`a[data-id="${postID}"]`);
-  linkElem.classList.remove('fw-bold');
+  // const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+  // linkElem.classList.remove('fw-bold');
 
   const { title, description, link } = state.posts.find((post) => post.id === postID);
   const modal = document.querySelector('#modal');
@@ -191,17 +191,12 @@ const view = (state, elements, i18next) => {
       renderItems(value, postsContainer, renderPost, i18next, watchedState);
     }
 
-    if (path === 'uiState.isPopupOpen') {
-      if (value === true) {
-        const { postID } = watchedState.uiState;
-        /*
-        const linkElem = document.querySelector(`a[data-id="${postID}"]`);
-        linkElem.classList.remove('fw-bold');
-        */
-        // linkElem.classList.add('fw-normal', 'link-secondary');
-        // stylizePostLink(postID, linkElem, watchedState);
-        openModal(postID, watchedState);
-      }
+    if (path === 'uiState.modal.postID') {
+      const postID = value;
+      const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+      linkElem.classList.remove('fw-bold');
+      linkElem.classList.add('fw-normal', 'link-secondary');
+      openModal(postID, watchedState);
     }
   });
 

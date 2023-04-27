@@ -3,7 +3,6 @@ const buildURL = (baseURLStr, pathname, searchParamsObj = {}) => {
   const entries = Object.entries(searchParamsObj);
   entries.forEach(([param, val]) => {
     resURL.searchParams.append(param, val);
-    console.log(param, val);
   });
   return resURL;
 };

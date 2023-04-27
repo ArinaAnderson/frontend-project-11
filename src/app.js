@@ -16,6 +16,12 @@ const app = () => {
     },
   });
 
+  const validationSchema = yup
+    .string()
+    .trim()
+    .required()
+    .url();
+
   const elements = {
     form: document.querySelector('.rss-form'),
     urlField: document.querySelector('#url-input'),
@@ -35,7 +41,10 @@ const app = () => {
     },
     uiState: {
       postID: null,
-      isPopupOpen: false,
+      // isPopupOpen: false,
+      modal: {
+        postID: null,
+      },
       openedLinksIDs: new Set(),
     },
   };
@@ -64,11 +73,10 @@ const app = () => {
     const watchedState = view(state, elements, i18nextInstance);
 
     elements.form.addEventListener('submit', (evt) => {
-      handleFormSubmit(evt, watchedState);
+      handleFormSubmit(evt, watchedState, validationSchema);
     });
 
     elements.postsContainer.addEventListener('click', (evt) => {
-      console.log(evt.target);
       const evtTargetHandler = evt.target.tagName.toLowerCase();
       const evtTargetID = evt.target.dataset.id;
       postElementsHandlers[evtTargetHandler](evtTargetID, watchedState, evt);

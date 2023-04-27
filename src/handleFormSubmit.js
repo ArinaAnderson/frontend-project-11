@@ -4,6 +4,7 @@ import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
 import sendRequest from './utils/sendRequest.js';
 
+/*
 const validateURLField = (urlField, rssLinks) => {
   const schema = yup
     .string()
@@ -11,8 +12,20 @@ const validateURLField = (urlField, rssLinks) => {
     .required()
     .url()
     .notOneOf(rssLinks);
-  return schema.validate(urlField, { abortEarly: false });
+  return validationSchema.notOneOf(rssLinks).validate(urlField, { abortEarly: false });
 };
+*/
+/*
+const validationSchema = yup
+  .string()
+  .trim()
+  .required()
+  .url();
+*/
+
+const validateURLField = (urlField, rssLinks, validationSchema) => validationSchema
+  .notOneOf(rssLinks)
+  .validate(urlField, { abortEarly: false });
 
 const errorMessagesMapping = {
   invalidUrl: (state) => {
@@ -32,7 +45,7 @@ const errorMessagesMapping = {
   },
 };
 
-const handleFormSubmit = (evt, state) => {
+const handleFormSubmit = (evt, state, validationSchema) => {
   evt.preventDefault();
   state.form.processState = 'submit';
   state.form.validationError = null;
@@ -41,7 +54,7 @@ const handleFormSubmit = (evt, state) => {
 
   const rssLinks = state.feeds.map(({ rssLink }) => rssLink);
 
-  validateURLField(urlData, rssLinks)
+  validateURLField(urlData, rssLinks, validationSchema)
     .then(() => {
       state.form.valid = true;
       state.form.validationError = null;
