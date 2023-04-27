@@ -55,10 +55,13 @@ const handleFormSubmit = (evt, state) => {
       const { feed, posts } = handlePayload(urlData, parsedRSS, currentFeedID, uniqueId);
       state.feeds.unshift(feed);
       state.posts = posts.concat(state.posts);
+      state.form.processState = 'loadSuccess';
     })
+    /*
     .then(() => {
       state.form.processState = 'loadSuccess';
     })
+    */
     .catch((e) => {
       console.log(e.message);
       errorMessagesMapping[e.message](state);
