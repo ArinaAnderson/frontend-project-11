@@ -2,24 +2,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   // трассировка путей в то время как мы получаем ошибку
   devtool: 'inline-source-map',
-  mode: process.env.NODE_ENV || 'development', // process.env.NODE_ENV ||
+  mode: process.env.NODE_ENV || 'development',
 
-  // абсолютный путь к директории с файлами из раздела entry
-  // context: path.resolve(process.cwd(), 'src'),
-  // entry: {
-  //   index: ['./index.js'],// './style.css'],
-  // },
   entry: './src/index.js',
   output: {
     clean: true,
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    // path: path.resolve(process.cwd(), 'dist'),
   },
   module: {
     rules: [
@@ -57,8 +49,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
-    // new TerserPlugin({
-    // }),
     new MiniCssExtractPlugin({
       filename: 'styles.css',
     }),
