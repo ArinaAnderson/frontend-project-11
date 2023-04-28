@@ -22,6 +22,10 @@ const app = () => {
     .required()
     .url();
 
+  const validateURLField = (urlField, rssLinks) => validationSchema
+    .notOneOf(rssLinks)
+    .validate(urlField, { abortEarly: false });
+
   const elements = {
     form: document.querySelector('.rss-form'),
     urlField: document.querySelector('#url-input'),
@@ -73,7 +77,7 @@ const app = () => {
     const watchedState = view(state, elements, i18nextInstance);
 
     elements.form.addEventListener('submit', (evt) => {
-      handleFormSubmit(evt, watchedState, validationSchema);
+      handleFormSubmit(evt, watchedState, validateURLField);
     });
 
     elements.postsContainer.addEventListener('click', (evt) => {

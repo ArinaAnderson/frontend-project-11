@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+// import * as yup from 'yup';
 import uniqueId from 'lodash/uniqueId.js';
 import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
@@ -22,10 +22,11 @@ const validationSchema = yup
   .required()
   .url();
 */
-
+/*
 const validateURLField = (urlField, rssLinks, validationSchema) => validationSchema
   .notOneOf(rssLinks)
   .validate(urlField, { abortEarly: false });
+*/
 
 const errorMessagesMapping = {
   invalidUrl: (state) => {
@@ -45,7 +46,7 @@ const errorMessagesMapping = {
   },
 };
 
-const handleFormSubmit = (evt, state, validationSchema) => {
+const handleFormSubmit = (evt, state, validateURLField) => {
   evt.preventDefault();
   state.form.processState = 'submit';
   state.form.validationError = null;
@@ -54,7 +55,7 @@ const handleFormSubmit = (evt, state, validationSchema) => {
 
   const rssLinks = state.feeds.map(({ rssLink }) => rssLink);
 
-  validateURLField(urlData, rssLinks, validationSchema)
+  validateURLField(urlData, rssLinks)
     .then(() => {
       state.form.valid = true;
       state.form.validationError = null;
