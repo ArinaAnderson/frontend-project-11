@@ -10,9 +10,6 @@ const stylizePostLink = (postID, linkElem, state) => {
 };
 
 const openModal = (postID, state) => {
-  // const linkElem = document.querySelector(`a[data-id="${postID}"]`);
-  // linkElem.classList.remove('fw-bold');
-
   const { title, description, link } = state.posts.find((post) => post.id === postID);
   const modal = document.querySelector('#modal');
   const modalTitle = modal.querySelector('.modal-title');
@@ -197,6 +194,13 @@ const view = (state, elements, i18next) => {
       linkElem.classList.remove('fw-bold');
       linkElem.classList.add('fw-normal', 'link-secondary');
       openModal(postID, watchedState);
+    }
+
+    if (path === 'uiState.postID') {
+      const postID = value;
+      const linkElem = document.querySelector(`a[data-id="${postID}"]`);
+      linkElem.classList.remove('fw-bold');
+      linkElem.classList.add('fw-normal', 'link-secondary');
     }
   });
 

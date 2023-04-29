@@ -1,32 +1,7 @@
-// import * as yup from 'yup';
 import uniqueId from 'lodash/uniqueId.js';
 import parseRSS from './parser.js';
 import handlePayload from './handlePayload.js';
 import sendRequest from './utils/sendRequest.js';
-
-/*
-const validateURLField = (urlField, rssLinks) => {
-  const schema = yup
-    .string()
-    .trim()
-    .required()
-    .url()
-    .notOneOf(rssLinks);
-  return validationSchema.notOneOf(rssLinks).validate(urlField, { abortEarly: false });
-};
-*/
-/*
-const validationSchema = yup
-  .string()
-  .trim()
-  .required()
-  .url();
-*/
-/*
-const validateURLField = (urlField, rssLinks, validationSchema) => validationSchema
-  .notOneOf(rssLinks)
-  .validate(urlField, { abortEarly: false });
-*/
 
 const errorMessagesMapping = {
   invalidUrl: (state) => {
@@ -71,13 +46,7 @@ const handleFormSubmit = (evt, state, validateURLField) => {
       state.posts = posts.concat(state.posts);
       state.form.processState = 'loadSuccess';
     })
-    /*
-    .then(() => {
-      state.form.processState = 'loadSuccess';
-    })
-    */
     .catch((e) => {
-      console.log(e.message);
       errorMessagesMapping[e.message](state);
     });
 };

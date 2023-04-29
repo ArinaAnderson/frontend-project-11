@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  // трассировка путей в то время как мы получаем ошибку
   devtool: 'inline-source-map',
   mode: process.env.NODE_ENV || 'development',
 
