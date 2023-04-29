@@ -172,10 +172,7 @@ const handleValidationError = (validationError, elements, i18next) => {
 
 const view = (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
-    const {
-      feedsContainer,
-      postsContainer,
-    } = elements;
+    const { feedsContainer, postsContainer } = elements;
 
     if (path === 'form.validationError') {
       handleValidationError(value, elements, i18next);
