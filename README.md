@@ -9,6 +9,4 @@
 
 [RSS Reader](https://frontend-project-11-iota-henna.vercel.app/) is a web application that aggregates syndicated web content such as online newspapers, blogs, and podcasts in one location for easy viewing. It allows to add an unlimited number of RSS feeds, updates and adds new posts automatically.
 
-<img width="400" src="/assets/demonstration.gif" alt="gif showing RSS Reader at action" />
-
-![gif showing RSS Reader at action](/assets/demonstration.gif)
+<img width="500" src="/assets/demonstration.gif" alt="gif showing RSS Reader at action" />
