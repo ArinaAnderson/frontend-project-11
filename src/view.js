@@ -197,7 +197,7 @@ const view = (state, elements, i18next) => {
       openModal(postID, watchedState);
     }
 
-    if (path === 'uiState.postID') {
+    if (path === 'uiState.postLink.postID') {
       const postID = value;
       const linkElem = document.querySelector(`a[data-id="${postID}"]`);
       repaintLink(linkElem);

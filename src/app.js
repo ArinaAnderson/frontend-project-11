@@ -157,7 +157,9 @@ const app = () => {
       processState: 'filling',
     },
     uiState: {
-      postID: null,
+      postLink: {
+        postID: null,
+      },
       modal: {
         postID: null,
       },
@@ -174,7 +176,7 @@ const app = () => {
       stateData.uiState.openedLinksIDs.add(id);
     },
     a: (id, stateData) => {
-      stateData.uiState.postID = id;
+      stateData.uiState.postLink.postID = id;
       stateData.uiState.openedLinksIDs.add(id);
     },
   };
