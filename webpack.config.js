@@ -1,5 +1,10 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default {
   devtool: 'inline-source-map',
@@ -43,4 +48,11 @@ export default {
       filename: 'styles.css',
     }),
   ],
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+    },
+    open: true,
+    hot: true,
+  },
 };
