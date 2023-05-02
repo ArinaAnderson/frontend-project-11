@@ -1,9 +1,7 @@
-/* eslint-disable global-require */
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-module.exports = {
+export default {
   devtool: 'inline-source-map',
   mode: process.env.NODE_ENV || 'development',
 
@@ -29,13 +27,6 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: () => [
-                  require('autoprefixer'),
-                ],
-              },
-            },
           },
           {
             loader: 'sass-loader',
@@ -52,11 +43,4 @@ module.exports = {
       filename: 'styles.css',
     }),
   ],
-  devServer: {
-    static: {
-      directory: path.resolve(__dirname, 'dist'),
-    },
-    open: true,
-    hot: true,
-  },
 };
