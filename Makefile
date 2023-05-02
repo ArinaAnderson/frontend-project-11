@@ -2,7 +2,8 @@ install:
 	npm ci
 
 build:
-	npm run build
+	rm -rf dist
+	NODE_ENV=production NODE_OPTIONS=--openssl-legacy-provider npx webpack
 
 develop:
 	npx webpack serve
